@@ -25,4 +25,61 @@ export class ProductService {
       `${this.apiUrl}/api/products/${slug}`
     );
   }
+
+  createProduct(product: any): Observable<{ success: boolean; data: Product }> {
+    // Generate slugs from names if not provided
+    const productData = {
+      ...product,
+      slug: product.slug || {
+        en: this.generateSlug(product.name.en),
+        ar: this.generateSlug(product.name.ar),
+      },
+    };
+
+    return this.http.post<{ success: boolean; data: Product }>(
+      `${this.apiUrl}/api/products`,
+      productData
+    );
+  }
+
+  updateProduct(
+    id: string,
+    product: any
+  ): Observable<{ success: boolean; data: Product }> {
+    // Generate slugs from names if not provided and names changed
+    const productData = {
+      ...product,
+      slug:
+        product.slug ||
+        (product.name
+          ? {
+              en: this.generateSlug(product.name.en),
+              ar: this.generateSlug(product.name.ar),
+            }
+          : undefined),
+    };
+
+    return this.http.put<{ success: boolean; data: Product }>(
+      `${this.apiUrl}/api/products/${id}`,
+      productData
+    );
+  }
+
+  deleteProduct(id: string): Observable<{ success: boolean }> {
+    return this.http.delete<{ success: boolean }>(
+      `${this.apiUrl}/api/products/${id}`
+    );
+  }
+
+  private generateSlug(text: string): string {
+    return text
+      .toString()
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, '-') // Replace spaces with -
+      .replace(/[^\u0600-\u06FFa-z0-9\-]/g, '') // Remove invalid chars (keep Arabic, English, numbers, and -)
+      .replace(/-+/g, '-') // Replace multiple - with single -
+      .replace(/^-+/, '') // Trim - from start
+      .replace(/-+$/, ''); // Trim - from end
+  }
 }

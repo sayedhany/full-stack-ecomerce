@@ -6,7 +6,6 @@ import { dirname, join, resolve } from 'node:path';
 import { readFileSync } from 'node:fs';
 import bootstrap from './src/main.server';
 import { LOCALE_ID } from '@angular/core';
-import cookieParser from 'cookie-parser';
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(): express.Express {
@@ -20,8 +19,6 @@ export function app(): express.Express {
   server.set('view engine', 'html');
   server.set('views', browserDistFolder);
 
-  // Use cookie parser middleware
-  server.use(cookieParser());
 
   // Serve static files from /browser (this must come before the SSR handler)
   server.use(

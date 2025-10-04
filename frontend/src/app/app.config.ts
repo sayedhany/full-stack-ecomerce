@@ -4,13 +4,19 @@ import {
   CUSTOM_ELEMENTS_SCHEMA,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient, withFetch, HttpClient } from '@angular/common/http';
+import {
+  provideHttpClient,
+  withFetch,
+  HttpClient,
+  withInterceptors,
+} from '@angular/common/http';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { importProvidersFrom } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
+import { authInterceptor } from './interceptors/auth.interceptor';
 
 // Simple TranslateLoader for HTTP
 export class HttpTranslateLoader implements TranslateLoader {
@@ -31,7 +37,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideClientHydration(),
-    provideHttpClient(withFetch()),
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
     importProvidersFrom(
       TranslateModule.forRoot({
         loader: {

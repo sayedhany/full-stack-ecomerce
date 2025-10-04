@@ -1,0 +1,16 @@
+@import "../admin-products/admin-products.component.scss";
+
+.role-badge {
+  display: inline-block;
+  padding: 0.375rem 0.75rem;
+  background: #6b7280;
+  color: white;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+
+  &.admin {
+    background: var(--primary-color);
+  }
+}

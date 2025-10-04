@@ -78,8 +78,49 @@ app.use((req, res, next) => {
 
 // ============= END LOGGING MIDDLEWARE =============
 
+// CORS Configuration - Allow all localhost origins
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, Postman, or curl)
+    if (!origin) return callback(null, true);
+
+    // Allow any localhost or 127.0.0.1 with any port
+    if (
+      origin.startsWith("http://localhost:") ||
+      origin.startsWith("http://127.0.0.1:") ||
+      origin.startsWith("https://localhost:") ||
+      origin.startsWith("https://127.0.0.1:") ||
+      origin === "http://localhost" ||
+      origin === "http://127.0.0.1"
+    ) {
+      return callback(null, true);
+    }
+
+    // Allow other origins if needed (add your production domains here)
+    const allowedOrigins = [
+      // Add your production domains here
+      // 'https://yourdomain.com',
+      // 'https://www.yourdomain.com'
+    ];
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    // For development, allow all origins
+    if (process.env.NODE_ENV === "development") {
+      return callback(null, true);
+    }
+
+    callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true, // Allow cookies and authentication headers
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

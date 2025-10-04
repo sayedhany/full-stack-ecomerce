@@ -1,0 +1,315 @@
+// Shared Admin Styles
+.admin-page {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+}
+
+.add-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.5rem;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: var(--secondary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+}
+
+.table-container {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  thead {
+    background: var(--primary-color);
+    color: white;
+
+    th {
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid var(--border-color);
+      transition: background 0.2s ease;
+
+      &:hover {
+        background: var(--bg-primary);
+      }
+
+      td {
+        padding: 1rem;
+        color: var(--text-primary);
+      }
+    }
+  }
+}
+
+.product-thumb {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+
+  button {
+    padding: 0.5rem 0.75rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.125rem;
+    transition: all 0.2s ease;
+  }
+
+  .edit-btn {
+    background: var(--primary-color);
+
+    &:hover {
+      opacity: 0.8;
+      transform: scale(1.1);
+    }
+  }
+
+  .delete-btn {
+    background: #ef4444;
+
+    &:hover {
+      opacity: 0.8;
+      transform: scale(1.1);
+    }
+  }
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding: 1.5rem 0;
+
+  .pagination-btn {
+    padding: 0.75rem 1.5rem;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover:not(:disabled) {
+      background: var(--secondary-color);
+      transform: translateY(-2px);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+
+  .page-info {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+}
+
+// Modal Styles
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal-content {
+  background: var(--bg-primary);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--border-color);
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: var(--text-primary);
+    }
+  }
+}
+
+.modal-form {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  label {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+  }
+
+  input,
+  textarea,
+  select {
+    padding: 0.875rem 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+
+    &:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1rem;
+
+  button {
+    padding: 0.875rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .cancel-btn {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+
+    &:hover {
+      background: var(--bg-primary);
+    }
+  }
+
+  .submit-btn {
+    background: var(--primary-color);
+    color: white;
+
+    &:hover {
+      background: var(--secondary-color);
+      transform: translateY(-2px);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .table-container {
+    overflow-x: auto;
+  }
+
+  .data-table {
+    min-width: 600px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-content {
+    max-width: 100%;
+  }
+}

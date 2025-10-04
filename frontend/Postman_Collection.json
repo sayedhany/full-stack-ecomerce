@@ -1,0 +1,966 @@
+{
+  "info": {
+    "name": "E-commerce Backend API",
+    "description": "Complete CRUD API collection for Products, Categories, and Authentication with bilingual support (EN/AR) and JWT authentication",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Server Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "health"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"customer@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set(\"authToken\", response.token);",
+                  "    console.log(\"Token saved:\", response.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login Customer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set(\"authToken\", response.token);",
+                  "    console.log(\"Token saved:\", response.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"customer@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "me"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Admin User (Admin Only)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New Admin\",\n  \"email\": \"newadmin@example.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/admin/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "admin", "create"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Users (Admin Only)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "users"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categories"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Category by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/categories/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categories", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{categoryId}}",
+                  "description": "Category ID"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Category by Slug (English)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/categories/slug/en/electronics",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categories", "slug", "en", "electronics"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Category by Slug (Arabic)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/categories/slug/ar/الكترونيات",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categories", "slug", "ar", "الكترونيات"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": {\n    \"en\": \"Electronics\",\n    \"ar\": \"إلكترونيات\"\n  },\n  \"slug\": {\n    \"en\": \"electronics\",\n    \"ar\": \"الكترونيات\"\n  },\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categories"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": {\n    \"en\": \"Electronics & Gadgets\",\n    \"ar\": \"إلكترونيات وأدوات\"\n  },\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/categories/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categories", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{categoryId}}",
+                  "description": "Category ID"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/categories/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categories", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{categoryId}}",
+                  "description": "Category ID"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Products - Page 1 (10 items)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Items per page"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Products - Page 2 (20 items)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products?page=2&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "2",
+                  "description": "Page number"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Items per page"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Products - Sorted by Price (Low to High)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products?sort=price-low&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products"],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "price-low",
+                  "description": "Sort order: newest, oldest, price-low, price-high, name-asc, name-desc"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Items per page"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Products - Sorted by Price (High to Low)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products?sort=price-high&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products"],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "price-high",
+                  "description": "Sort by price descending"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Items per page"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Products by Category (English)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products?category=electronics&lang=en",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products"],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "electronics",
+                  "description": "Category slug"
+                },
+                {
+                  "key": "lang",
+                  "value": "en",
+                  "description": "Language (en or ar)"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Products by Category (Arabic)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products?category=الكترونيات&lang=ar",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products"],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "الكترونيات",
+                  "description": "Category slug in Arabic"
+                },
+                {
+                  "key": "lang",
+                  "value": "ar",
+                  "description": "Language"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Product by Slug (English)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products/en/laptop-pro-15",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "en", "laptop-pro-15"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Product by Slug (Arabic)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products/ar/لابتوب-برو-15",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "ar", "لابتوب-برو-15"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Product by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products/id/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "id", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{productId}}",
+                  "description": "Product ID"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": {\n    \"en\": \"Laptop Pro 15\",\n    \"ar\": \"لابتوب برو ١٥\"\n  },\n  \"description\": {\n    \"en\": \"High-performance laptop with 16GB RAM and 512GB SSD\",\n    \"ar\": \"كمبيوتر محمول عالي الأداء مع ذاكرة 16 جيجابايت وقرص SSD بسعة 512 جيجابايت\"\n  },\n  \"price\": 1299.99,\n  \"image\": \"https://images.unsplash.com/photo-1496181133206-80ce9b88a853\",\n  \"slug\": {\n    \"en\": \"laptop-pro-15\",\n    \"ar\": \"لابتوب-برو-15\"\n  },\n  \"category\": \"{{categoryId}}\",\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 1199.99,\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/products/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{productId}}",
+                  "description": "Product ID"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{productId}}",
+                  "description": "Product ID"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Image Upload",
+      "item": [
+        {
+          "name": "Upload Single Product Image",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": "",
+                  "description": "Select an image file (jpg, png, gif, webp - max 5MB)"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/products/upload",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "upload"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Upload Multiple Product Images",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": "",
+                  "description": "Select first image"
+                },
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": "",
+                  "description": "Select second image (optional)"
+                },
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": "",
+                  "description": "Select third image (optional)"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/products/upload/multiple",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "upload", "multiple"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product with Image Upload",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{authToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name_en",
+                  "value": "Gaming Mouse",
+                  "type": "text"
+                },
+                {
+                  "key": "name_ar",
+                  "value": "ماوس ألعاب",
+                  "type": "text"
+                },
+                {
+                  "key": "description_en",
+                  "value": "High-precision gaming mouse with RGB lighting",
+                  "type": "text"
+                },
+                {
+                  "key": "description_ar",
+                  "value": "ماوس ألعاب عالي الدقة مع إضاءة RGB",
+                  "type": "text"
+                },
+                {
+                  "key": "price",
+                  "value": "79.99",
+                  "type": "text"
+                },
+                {
+                  "key": "slug_en",
+                  "value": "gaming-mouse",
+                  "type": "text"
+                },
+                {
+                  "key": "slug_ar",
+                  "value": "ماوس-العاب",
+                  "type": "text"
+                },
+                {
+                  "key": "category",
+                  "value": "{{categoryId}}",
+                  "type": "text",
+                  "description": "Set categoryId variable first"
+                },
+                {
+                  "key": "isActive",
+                  "value": "true",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": "",
+                  "description": "Select product image"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/products/with-image",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "with-image"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Sample Data Examples",
+      "item": [
+        {
+          "name": "Create Category - Clothing",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": {\n    \"en\": \"Clothing\",\n    \"ar\": \"ملابس\"\n  },\n  \"slug\": {\n    \"en\": \"clothing\",\n    \"ar\": \"ملابس\"\n  },\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categories"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Category - Books",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": {\n    \"en\": \"Books\",\n    \"ar\": \"كتب\"\n  },\n  \"slug\": {\n    \"en\": \"books\",\n    \"ar\": \"كتب\"\n  },\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categories"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product - Wireless Headphones",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": {\n    \"en\": \"Wireless Headphones\",\n    \"ar\": \"سماعات لاسلكية\"\n  },\n  \"description\": {\n    \"en\": \"Noise-cancelling wireless headphones with premium sound quality\",\n    \"ar\": \"سماعات لاسلكية بخاصية عزل الضوضاء وجودة صوت فائقة\"\n  },\n  \"price\": 249.99,\n  \"image\": \"https://images.unsplash.com/photo-1505740420928-5e560c06d30e\",\n  \"slug\": {\n    \"en\": \"wireless-headphones\",\n    \"ar\": \"سماعات-لاسلكية\"\n  },\n  \"category\": \"{{categoryId}}\",\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product - T-Shirt",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": {\n    \"en\": \"Cotton T-Shirt\",\n    \"ar\": \"قميص قطني\"\n  },\n  \"description\": {\n    \"en\": \"Premium quality 100% cotton t-shirt\",\n    \"ar\": \"قميص قطني بجودة فائقة 100٪\"\n  },\n  \"price\": 29.99,\n  \"image\": \"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab\",\n  \"slug\": {\n    \"en\": \"cotton-t-shirt\",\n    \"ar\": \"قميص-قطني\"\n  },\n  \"category\": \"{{categoryId}}\",\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "categoryId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "productId",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
