@@ -344,6 +344,141 @@
       ]
     },
     {
+      "name": "Image Upload",
+      "item": [
+        {
+          "name": "Upload Single Product Image",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": "",
+                  "description": "Select an image file (jpg, png, gif, webp - max 5MB)"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/products/upload",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "upload"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Upload Multiple Product Images",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": "",
+                  "description": "Select first image"
+                },
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": "",
+                  "description": "Select second image (optional)"
+                },
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": "",
+                  "description": "Select third image (optional)"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/products/upload/multiple",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "upload", "multiple"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product with Image Upload",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name_en",
+                  "value": "Gaming Mouse",
+                  "type": "text"
+                },
+                {
+                  "key": "name_ar",
+                  "value": "ماوس ألعاب",
+                  "type": "text"
+                },
+                {
+                  "key": "description_en",
+                  "value": "High-precision gaming mouse with RGB lighting",
+                  "type": "text"
+                },
+                {
+                  "key": "description_ar",
+                  "value": "ماوس ألعاب عالي الدقة مع إضاءة RGB",
+                  "type": "text"
+                },
+                {
+                  "key": "price",
+                  "value": "79.99",
+                  "type": "text"
+                },
+                {
+                  "key": "slug_en",
+                  "value": "gaming-mouse",
+                  "type": "text"
+                },
+                {
+                  "key": "slug_ar",
+                  "value": "ماوس-العاب",
+                  "type": "text"
+                },
+                {
+                  "key": "category",
+                  "value": "{{categoryId}}",
+                  "type": "text",
+                  "description": "Set categoryId variable first"
+                },
+                {
+                  "key": "isActive",
+                  "value": "true",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": "",
+                  "description": "Select product image"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/products/with-image",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "with-image"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
       "name": "Sample Data Examples",
       "item": [
         {

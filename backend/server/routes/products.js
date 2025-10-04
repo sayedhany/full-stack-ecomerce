@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Product = require("../models/Product");
+const upload = require("../middleware/upload");
 
 /**
  * @swagger
@@ -450,6 +451,288 @@ router.delete("/:id", async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error deleting product",
+      error: error.message,
+    });
+  }
+});
+
+/**
+ * @swagger
+ * /api/products/upload:
+ *   post:
+ *     summary: Upload product image
+ *     tags: [Products]
+ *     description: Upload a single product image (jpeg, jpg, png, gif, webp - max 5MB)
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: Product image file
+ *     responses:
+ *       200:
+ *         description: Image uploaded successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Image uploaded successfully
+ *                 imageUrl:
+ *                   type: string
+ *                   example: /uploads/product-1234567890.jpg
+ *                 fullUrl:
+ *                   type: string
+ *                   example: http://localhost:5000/uploads/product-1234567890.jpg
+ *       400:
+ *         description: No file uploaded or invalid file type
+ *       500:
+ *         description: Server error
+ */
+router.post("/upload", upload.single("image"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "No image file uploaded",
+      });
+    }
+
+    const imageUrl = `/uploads/${req.file.filename}`;
+    const fullUrl = `${req.protocol}://${req.get("host")}${imageUrl}`;
+
+    res.json({
+      success: true,
+      message: "Image uploaded successfully",
+      imageUrl: imageUrl,
+      fullUrl: fullUrl,
+      file: {
+        filename: req.file.filename,
+        originalname: req.file.originalname,
+        mimetype: req.file.mimetype,
+        size: req.file.size,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error uploading image",
+      error: error.message,
+    });
+  }
+});
+
+/**
+ * @swagger
+ * /api/products/upload/multiple:
+ *   post:
+ *     summary: Upload multiple product images
+ *     tags: [Products]
+ *     description: Upload up to 5 product images at once (jpeg, jpg, png, gif, webp - max 5MB each)
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               images:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *                 description: Multiple product image files
+ *     responses:
+ *       200:
+ *         description: Images uploaded successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: 3 images uploaded successfully
+ *                 images:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       imageUrl:
+ *                         type: string
+ *                       fullUrl:
+ *                         type: string
+ *                       filename:
+ *                         type: string
+ *       400:
+ *         description: No files uploaded
+ *       500:
+ *         description: Server error
+ */
+router.post("/upload/multiple", upload.array("images", 5), async (req, res) => {
+  try {
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No image files uploaded",
+      });
+    }
+
+    const images = req.files.map((file) => ({
+      imageUrl: `/uploads/${file.filename}`,
+      fullUrl: `${req.protocol}://${req.get("host")}/uploads/${file.filename}`,
+      filename: file.filename,
+      originalname: file.originalname,
+      mimetype: file.mimetype,
+      size: file.size,
+    }));
+
+    res.json({
+      success: true,
+      message: `${req.files.length} image(s) uploaded successfully`,
+      count: req.files.length,
+      images: images,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error uploading images",
+      error: error.message,
+    });
+  }
+});
+
+/**
+ * @swagger
+ * /api/products/with-image:
+ *   post:
+ *     summary: Create product with image upload
+ *     tags: [Products]
+ *     description: Create a new product and upload its image in one request
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name_en
+ *               - name_ar
+ *               - description_en
+ *               - description_ar
+ *               - price
+ *               - slug_en
+ *               - slug_ar
+ *               - category
+ *               - image
+ *             properties:
+ *               name_en:
+ *                 type: string
+ *                 example: Laptop Pro 15
+ *               name_ar:
+ *                 type: string
+ *                 example: لابتوب برو ١٥
+ *               description_en:
+ *                 type: string
+ *                 example: High-performance laptop
+ *               description_ar:
+ *                 type: string
+ *                 example: كمبيوتر محمول عالي الأداء
+ *               price:
+ *                 type: number
+ *                 example: 1299.99
+ *               slug_en:
+ *                 type: string
+ *                 example: laptop-pro-15
+ *               slug_ar:
+ *                 type: string
+ *                 example: لابتوب-برو-15
+ *               category:
+ *                 type: string
+ *                 example: 507f1f77bcf86cd799439011
+ *               isActive:
+ *                 type: boolean
+ *                 example: true
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: Product image file
+ *     responses:
+ *       201:
+ *         description: Product created with image successfully
+ *       400:
+ *         description: Bad request or validation error
+ */
+router.post("/with-image", upload.single("image"), async (req, res) => {
+  try {
+    // Construct product data from form fields
+    const productData = {
+      name: {
+        en: req.body.name_en,
+        ar: req.body.name_ar,
+      },
+      description: {
+        en: req.body.description_en,
+        ar: req.body.description_ar,
+      },
+      price: req.body.price,
+      slug: {
+        en: req.body.slug_en,
+        ar: req.body.slug_ar,
+      },
+      category: req.body.category,
+      isActive: req.body.isActive !== undefined ? req.body.isActive : true,
+    };
+
+    // Add image URL if file was uploaded
+    if (req.file) {
+      productData.image = `${req.protocol}://${req.get("host")}/uploads/${
+        req.file.filename
+      }`;
+    } else if (req.body.image) {
+      // Use provided URL if no file uploaded
+      productData.image = req.body.image;
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "Product image is required (upload file or provide URL)",
+      });
+    }
+
+    const product = await Product.create(productData);
+    const populatedProduct = await Product.findById(product._id).populate(
+      "category"
+    );
+
+    res.status(201).json({
+      success: true,
+      message: "Product created with image successfully",
+      data: populatedProduct,
+    });
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        message: "Product with this slug already exists",
+        error: error.message,
+      });
+    }
+    res.status(400).json({
+      success: false,
+      message: "Error creating product",
       error: error.message,
     });
   }
