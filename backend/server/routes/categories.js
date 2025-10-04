@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Category = require("../models/Category");
+const { protect, authorize } = require("../middleware/auth");
 
 /**
  * @swagger
@@ -245,8 +246,10 @@ router.get("/slug/:lang/:slug", async (req, res) => {
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *     security:
+ *       - bearerAuth: []
  */
-router.post("/", async (req, res) => {
+router.post("/", protect, authorize("admin"), async (req, res) => {
   try {
     const category = await Category.create(req.body);
     res.status(201).json({
@@ -322,8 +325,10 @@ router.post("/", async (req, res) => {
  *         description: Category not found
  *       400:
  *         description: Bad request
+ *     security:
+ *       - bearerAuth: []
  */
-router.put("/:id", async (req, res) => {
+router.put("/:id", protect, authorize("admin"), async (req, res) => {
   try {
     const category = await Category.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -386,8 +391,10 @@ router.put("/:id", async (req, res) => {
  *         description: Category not found
  *       500:
  *         description: Server error
+ *     security:
+ *       - bearerAuth: []
  */
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", protect, authorize("admin"), async (req, res) => {
   try {
     const category = await Category.findByIdAndDelete(req.params.id);
 

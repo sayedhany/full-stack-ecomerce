@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Product = require("../models/Product");
 const upload = require("../middleware/upload");
+const { protect, authorize } = require("../middleware/auth");
 
 /**
  * @swagger
@@ -279,8 +280,10 @@ router.get("/id/:id", async (req, res) => {
  *                   $ref: '#/components/schemas/Product'
  *       400:
  *         description: Bad request or duplicate slug
+ *     security:
+ *       - bearerAuth: []
  */
-router.post("/", async (req, res) => {
+router.post("/", protect, authorize("admin"), async (req, res) => {
   try {
     const product = await Product.create(req.body);
     const populatedProduct = await Product.findById(product._id).populate(
@@ -366,8 +369,10 @@ router.post("/", async (req, res) => {
  *         description: Product not found
  *       400:
  *         description: Bad request
+ *     security:
+ *       - bearerAuth: []
  */
-router.put("/:id", async (req, res) => {
+router.put("/:id", protect, authorize("admin"), async (req, res) => {
   try {
     const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -430,8 +435,10 @@ router.put("/:id", async (req, res) => {
  *         description: Product not found
  *       500:
  *         description: Server error
+ *     security:
+ *       - bearerAuth: []
  */
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", protect, authorize("admin"), async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
 
@@ -498,39 +505,47 @@ router.delete("/:id", async (req, res) => {
  *         description: No file uploaded or invalid file type
  *       500:
  *         description: Server error
+ *     security:
+ *       - bearerAuth: []
  */
-router.post("/upload", upload.single("image"), async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({
+router.post(
+  "/upload",
+  protect,
+  authorize("admin"),
+  upload.single("image"),
+  async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({
+          success: false,
+          message: "No image file uploaded",
+        });
+      }
+
+      const imageUrl = `/uploads/${req.file.filename}`;
+      const fullUrl = `${req.protocol}://${req.get("host")}${imageUrl}`;
+
+      res.json({
+        success: true,
+        message: "Image uploaded successfully",
+        imageUrl: imageUrl,
+        fullUrl: fullUrl,
+        file: {
+          filename: req.file.filename,
+          originalname: req.file.originalname,
+          mimetype: req.file.mimetype,
+          size: req.file.size,
+        },
+      });
+    } catch (error) {
+      res.status(500).json({
         success: false,
-        message: "No image file uploaded",
+        message: "Error uploading image",
+        error: error.message,
       });
     }
-
-    const imageUrl = `/uploads/${req.file.filename}`;
-    const fullUrl = `${req.protocol}://${req.get("host")}${imageUrl}`;
-
-    res.json({
-      success: true,
-      message: "Image uploaded successfully",
-      imageUrl: imageUrl,
-      fullUrl: fullUrl,
-      file: {
-        filename: req.file.filename,
-        originalname: req.file.originalname,
-        mimetype: req.file.mimetype,
-        size: req.file.size,
-      },
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Error uploading image",
-      error: error.message,
-    });
   }
-});
+);
 
 /**
  * @swagger
@@ -581,39 +596,49 @@ router.post("/upload", upload.single("image"), async (req, res) => {
  *         description: No files uploaded
  *       500:
  *         description: Server error
+ *     security:
+ *       - bearerAuth: []
  */
-router.post("/upload/multiple", upload.array("images", 5), async (req, res) => {
-  try {
-    if (!req.files || req.files.length === 0) {
-      return res.status(400).json({
+router.post(
+  "/upload/multiple",
+  protect,
+  authorize("admin"),
+  upload.array("images", 5),
+  async (req, res) => {
+    try {
+      if (!req.files || req.files.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: "No image files uploaded",
+        });
+      }
+
+      const images = req.files.map((file) => ({
+        imageUrl: `/uploads/${file.filename}`,
+        fullUrl: `${req.protocol}://${req.get("host")}/uploads/${
+          file.filename
+        }`,
+        filename: file.filename,
+        originalname: file.originalname,
+        mimetype: file.mimetype,
+        size: file.size,
+      }));
+
+      res.json({
+        success: true,
+        message: `${req.files.length} image(s) uploaded successfully`,
+        count: req.files.length,
+        images: images,
+      });
+    } catch (error) {
+      res.status(500).json({
         success: false,
-        message: "No image files uploaded",
+        message: "Error uploading images",
+        error: error.message,
       });
     }
-
-    const images = req.files.map((file) => ({
-      imageUrl: `/uploads/${file.filename}`,
-      fullUrl: `${req.protocol}://${req.get("host")}/uploads/${file.filename}`,
-      filename: file.filename,
-      originalname: file.originalname,
-      mimetype: file.mimetype,
-      size: file.size,
-    }));
-
-    res.json({
-      success: true,
-      message: `${req.files.length} image(s) uploaded successfully`,
-      count: req.files.length,
-      images: images,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Error uploading images",
-      error: error.message,
-    });
   }
-});
+);
 
 /**
  * @swagger
@@ -675,67 +700,75 @@ router.post("/upload/multiple", upload.array("images", 5), async (req, res) => {
  *         description: Product created with image successfully
  *       400:
  *         description: Bad request or validation error
+ *     security:
+ *       - bearerAuth: []
  */
-router.post("/with-image", upload.single("image"), async (req, res) => {
-  try {
-    // Construct product data from form fields
-    const productData = {
-      name: {
-        en: req.body.name_en,
-        ar: req.body.name_ar,
-      },
-      description: {
-        en: req.body.description_en,
-        ar: req.body.description_ar,
-      },
-      price: req.body.price,
-      slug: {
-        en: req.body.slug_en,
-        ar: req.body.slug_ar,
-      },
-      category: req.body.category,
-      isActive: req.body.isActive !== undefined ? req.body.isActive : true,
-    };
+router.post(
+  "/with-image",
+  protect,
+  authorize("admin"),
+  upload.single("image"),
+  async (req, res) => {
+    try {
+      // Construct product data from form fields
+      const productData = {
+        name: {
+          en: req.body.name_en,
+          ar: req.body.name_ar,
+        },
+        description: {
+          en: req.body.description_en,
+          ar: req.body.description_ar,
+        },
+        price: req.body.price,
+        slug: {
+          en: req.body.slug_en,
+          ar: req.body.slug_ar,
+        },
+        category: req.body.category,
+        isActive: req.body.isActive !== undefined ? req.body.isActive : true,
+      };
 
-    // Add image URL if file was uploaded
-    if (req.file) {
-      productData.image = `${req.protocol}://${req.get("host")}/uploads/${
-        req.file.filename
-      }`;
-    } else if (req.body.image) {
-      // Use provided URL if no file uploaded
-      productData.image = req.body.image;
-    } else {
-      return res.status(400).json({
-        success: false,
-        message: "Product image is required (upload file or provide URL)",
+      // Add image URL if file was uploaded
+      if (req.file) {
+        productData.image = `${req.protocol}://${req.get("host")}/uploads/${
+          req.file.filename
+        }`;
+      } else if (req.body.image) {
+        // Use provided URL if no file uploaded
+        productData.image = req.body.image;
+      } else {
+        return res.status(400).json({
+          success: false,
+          message: "Product image is required (upload file or provide URL)",
+        });
+      }
+
+      const product = await Product.create(productData);
+      const populatedProduct = await Product.findById(product._id).populate(
+        "category"
+      );
+
+      res.status(201).json({
+        success: true,
+        message: "Product created with image successfully",
+        data: populatedProduct,
       });
-    }
-
-    const product = await Product.create(productData);
-    const populatedProduct = await Product.findById(product._id).populate(
-      "category"
-    );
-
-    res.status(201).json({
-      success: true,
-      message: "Product created with image successfully",
-      data: populatedProduct,
-    });
-  } catch (error) {
-    if (error.code === 11000) {
-      return res.status(400).json({
+    } catch (error) {
+      if (error.code === 11000) {
+        return res.status(400).json({
+          success: false,
+          message: "Product with this slug already exists",
+          error: error.message,
+        });
+      }
+      res.status(400).json({
         success: false,
-        message: "Product with this slug already exists",
+        message: "Error creating product",
         error: error.message,
       });
     }
-    res.status(400).json({
-      success: false,
-      message: "Error creating product",
-      error: error.message,
-    });
   }
-});
+);
 
 module.exports = router;

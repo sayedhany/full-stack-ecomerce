@@ -33,15 +33,29 @@ const options = {
         description: "Health check endpoints",
       },
       {
+        name: "Authentication",
+        description: "User authentication and authorization endpoints",
+      },
+      {
         name: "Categories",
-        description: "Category management endpoints (bilingual)",
+        description:
+          "Category management endpoints (bilingual) - Admin only for CUD operations",
       },
       {
         name: "Products",
-        description: "Product management endpoints (bilingual)",
+        description:
+          "Product management endpoints (bilingual) - Admin only for CUD operations",
       },
     ],
     components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+          description: "Enter your JWT token in the format: Bearer <token>",
+        },
+      },
       schemas: {
         BilingualText: {
           type: "object",

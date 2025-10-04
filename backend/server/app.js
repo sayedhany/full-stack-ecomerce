@@ -84,7 +84,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serve static files from uploads directory
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 // Swagger Documentation
 app.use(
@@ -105,9 +105,11 @@ app.get("/api-docs.json", (req, res) => {
 // Routes
 const productRoutes = require("./routes/products");
 const categoryRoutes = require("./routes/categories");
+const authRoutes = require("./routes/auth");
 
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
+app.use("/api/auth", authRoutes);
 
 /**
  * @swagger
