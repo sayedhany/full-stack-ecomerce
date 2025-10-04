@@ -11,8 +11,13 @@ export class ProductService {
   private http = inject(HttpClient);
   private apiUrl = environment.apiUrl;
 
-  getProducts(): Observable<ApiResponse<Product>> {
-    return this.http.get<ApiResponse<Product>>(`${this.apiUrl}/api/products`);
+  getProducts(
+    page: number = 1,
+    limit: number = 10
+  ): Observable<ApiResponse<Product>> {
+    return this.http.get<ApiResponse<Product>>(
+      `${this.apiUrl}/api/products?page=${page}&limit=${limit}`
+    );
   }
 
   getProductBySlug(slug: string): Observable<{ data: Product }> {

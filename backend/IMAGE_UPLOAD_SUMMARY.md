@@ -2,22 +2,45 @@
 
 ## ✅ What Was Added
 
-### 📦 Installed Package
+### 📦 Installed Packages
 
 - **multer** (v2.0.2) - Middleware for handling `multipart/form-data` file uploads
+- **sharp** (v0.34.4) - High-performance image processing library
 
 ### 📁 New Files Created
 
-1. **`server/middleware/upload.js`** - Multer configuration for image uploads
+1. **`server/middleware/upload.js`** - Multer + Sharp configuration for image uploads & compression
 2. **`uploads/` directory** - Storage location for uploaded images
 3. **`IMAGE_UPLOAD_GUIDE.md`** - Complete documentation
+4. **`IMAGE_COMPRESSION_GUIDE.md`** - Image compression documentation
 
 ### 🔧 Modified Files
 
-1. **`server/routes/products.js`** - Added 3 new upload endpoints
+1. **`server/routes/products.js`** - Added 3 new upload endpoints with compression
 2. **`server/app.js`** - Added static file serving for uploads
 3. **`.gitignore`** - Excluded uploaded files from git
 4. **`Postman_Collection.json`** - Added image upload requests
+
+---
+
+## 🎨 Image Processing Features
+
+### Automatic Compression & Optimization
+
+All uploaded images are automatically:
+
+- ✅ **Compressed** to reduce file size by 60-80%
+- ✅ **Converted to WebP** format for optimal web performance
+- ✅ **Resized** to max 1200x1200px (maintains aspect ratio)
+- ✅ **Optimized** with 80% quality setting
+
+### Before & After
+
+| Original          | Processed         |
+| ----------------- | ----------------- |
+| JPEG/PNG (2-5 MB) | WebP (200-500 KB) |
+| Any dimensions    | Max 1200x1200px   |
+| Variable quality  | 80% quality       |
 
 ---
 
@@ -27,14 +50,25 @@
 
 ```
 POST /api/products/upload
+Authorization: Bearer {token}
 Content-Type: multipart/form-data
 Body: image (file)
+```
+
+**Response:**
+
+```json
+{
+  "imageUrl": "/uploads/product-1234567890.webp",
+  "size": 245678
+}
 ```
 
 ### 2. Upload Multiple Images
 
 ```
 POST /api/products/upload/multiple
+Authorization: Bearer {token}
 Content-Type: multipart/form-data
 Body: images (multiple files, max 5)
 ```
@@ -43,6 +77,7 @@ Body: images (multiple files, max 5)
 
 ```
 POST /api/products/with-image
+Authorization: Bearer {token}
 Content-Type: multipart/form-data
 Body:
   - name_en, name_ar

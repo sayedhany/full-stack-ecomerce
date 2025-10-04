@@ -37,9 +37,11 @@ const { protect, authorize } = require("../middleware/auth");
  */
 router.get("/", async (req, res) => {
   try {
-    const categories = await Category.find({ isActive: true }).sort({
-      createdAt: -1,
-    });
+    const categories = await Category.find({ isActive: true })
+      .populate("createdBy updatedBy", "name email")
+      .sort({
+        createdAt: -1,
+      });
     res.json({
       success: true,
       count: categories.length,
@@ -251,7 +253,17 @@ router.get("/slug/:lang/:slug", async (req, res) => {
  */
 router.post("/", protect, authorize("admin"), async (req, res) => {
   try {
-    const category = await Category.create(req.body);
+    // Add createdBy from authenticated user
+    const categoryData = {
+      ...req.body,
+      createdBy: req.user._id,
+    };
+
+    const category = await Category.create(categoryData);
+
+    // Populate createdBy user info
+    await category.populate("createdBy", "name email");
+
     res.status(201).json({
       success: true,
       message: "Category created successfully",
@@ -330,10 +342,20 @@ router.post("/", protect, authorize("admin"), async (req, res) => {
  */
 router.put("/:id", protect, authorize("admin"), async (req, res) => {
   try {
-    const category = await Category.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    // Add updatedBy from authenticated user
+    const updateData = {
+      ...req.body,
+      updatedBy: req.user._id,
+    };
+
+    const category = await Category.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      {
+        new: true,
+        runValidators: true,
+      }
+    ).populate("createdBy updatedBy", "name email");
 
     if (!category) {
       return res.status(404).json({

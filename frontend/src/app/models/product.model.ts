@@ -30,5 +30,8 @@ export interface Product {
 export interface ApiResponse<T> {
   success: boolean;
   count: number;
+  total: number;
+  page: number;
+  pages: number;
   data: T[];
 }

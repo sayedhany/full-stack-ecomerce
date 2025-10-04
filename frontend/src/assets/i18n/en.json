@@ -26,5 +26,9 @@
   "NO_PRODUCTS_FOUND": "No products found",
   "LOADING": "Loading...",
   "DARK_MODE": "Dark Mode",
-  "LIGHT_MODE": "Light Mode"
+  "LIGHT_MODE": "Light Mode",
+  "SHOWING": "Showing",
+  "OF": "of",
+  "PREVIOUS": "Previous",
+  "NEXT": "Next"
 }

@@ -2,15 +2,16 @@ const express = require("express");
 const router = express.Router();
 const Product = require("../models/Product");
 const upload = require("../middleware/upload");
+const { processImage } = require("../middleware/upload");
 const { protect, authorize } = require("../middleware/auth");
 
 /**
  * @swagger
  * /api/products:
  *   get:
- *     summary: Get all products
+ *     summary: Get all products with pagination
  *     tags: [Products]
- *     description: Retrieve all active products with optional category filtering
+ *     description: Retrieve all active products with optional category filtering and pagination
  *     parameters:
  *       - in: query
  *         name: category
@@ -25,6 +26,31 @@ const { protect, authorize } = require("../middleware/auth");
  *           enum: [en, ar]
  *         description: Language for category slug (required if category is provided)
  *         example: en
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number
+ *         example: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 10
+ *         description: Number of items per page
+ *         example: 10
+ *       - in: query
+ *         name: sort
+ *         schema:
+ *           type: string
+ *           enum: [newest, oldest, price-low, price-high, name-asc, name-desc]
+ *           default: newest
+ *         description: Sort order
+ *         example: newest
  *     responses:
  *       200:
  *         description: List of products retrieved successfully
@@ -38,6 +64,15 @@ const { protect, authorize } = require("../middleware/auth");
  *                   example: true
  *                 count:
  *                   type: number
+ *                   example: 10
+ *                 total:
+ *                   type: number
+ *                   example: 45
+ *                 page:
+ *                   type: number
+ *                   example: 1
+ *                 pages:
+ *                   type: number
  *                   example: 5
  *                 data:
  *                   type: array
@@ -50,7 +85,7 @@ const { protect, authorize } = require("../middleware/auth");
  */
 router.get("/", async (req, res) => {
   try {
-    const { category, lang } = req.query;
+    const { category, lang, page = 1, limit = 10, sort = "newest" } = req.query;
     const query = { isActive: true };
 
     // Filter by category slug if provided
@@ -76,13 +111,51 @@ router.get("/", async (req, res) => {
       }
     }
 
+    // Pagination
+    const pageNum = parseInt(page, 10);
+    const limitNum = Math.min(parseInt(limit, 10), 100); // Max 100 items per page
+    const skip = (pageNum - 1) * limitNum;
+
+    // Sorting
+    let sortOption = { createdAt: -1 }; // Default: newest first
+
+    switch (sort) {
+      case "oldest":
+        sortOption = { createdAt: 1 };
+        break;
+      case "price-low":
+        sortOption = { price: 1 };
+        break;
+      case "price-high":
+        sortOption = { price: -1 };
+        break;
+      case "name-asc":
+        sortOption = { "name.en": 1 };
+        break;
+      case "name-desc":
+        sortOption = { "name.en": -1 };
+        break;
+      default:
+        sortOption = { createdAt: -1 };
+    }
+
+    // Get total count for pagination
+    const total = await Product.countDocuments(query);
+
+    // Get paginated products
     const products = await Product.find(query)
       .populate("category")
-      .sort({ createdAt: -1 });
+      .populate("createdBy updatedBy", "name email")
+      .sort(sortOption)
+      .skip(skip)
+      .limit(limitNum);
 
     res.json({
       success: true,
       count: products.length,
+      total: total,
+      page: pageNum,
+      pages: Math.ceil(total / limitNum),
       data: products,
     });
   } catch (error) {
@@ -285,10 +358,16 @@ router.get("/id/:id", async (req, res) => {
  */
 router.post("/", protect, authorize("admin"), async (req, res) => {
   try {
-    const product = await Product.create(req.body);
-    const populatedProduct = await Product.findById(product._id).populate(
-      "category"
-    );
+    // Add createdBy from authenticated user
+    const productData = {
+      ...req.body,
+      createdBy: req.user._id,
+    };
+
+    const product = await Product.create(productData);
+    const populatedProduct = await Product.findById(product._id)
+      .populate("category")
+      .populate("createdBy", "name email");
 
     res.status(201).json({
       success: true,
@@ -374,10 +453,18 @@ router.post("/", protect, authorize("admin"), async (req, res) => {
  */
 router.put("/:id", protect, authorize("admin"), async (req, res) => {
   try {
-    const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+    // Add updatedBy from authenticated user
+    const updateData = {
+      ...req.body,
+      updatedBy: req.user._id,
+    };
+
+    const product = await Product.findByIdAndUpdate(req.params.id, updateData, {
       new: true,
       runValidators: true,
-    }).populate("category");
+    })
+      .populate("category")
+      .populate("createdBy updatedBy", "name email");
 
     if (!product) {
       return res.status(404).json({
@@ -513,6 +600,7 @@ router.post(
   protect,
   authorize("admin"),
   upload.single("image"),
+  processImage,
   async (req, res) => {
     try {
       if (!req.file) {
@@ -604,6 +692,7 @@ router.post(
   protect,
   authorize("admin"),
   upload.array("images", 5),
+  processImage,
   async (req, res) => {
     try {
       if (!req.files || req.files.length === 0) {
@@ -708,6 +797,7 @@ router.post(
   protect,
   authorize("admin"),
   upload.single("image"),
+  processImage,
   async (req, res) => {
     try {
       // Construct product data from form fields
@@ -727,6 +817,7 @@ router.post(
         },
         category: req.body.category,
         isActive: req.body.isActive !== undefined ? req.body.isActive : true,
+        createdBy: req.user._id, // Add createdBy from authenticated user
       };
 
       // Add image URL if file was uploaded
@@ -745,9 +836,9 @@ router.post(
       }
 
       const product = await Product.create(productData);
-      const populatedProduct = await Product.findById(product._id).populate(
-        "category"
-      );
+      const populatedProduct = await Product.findById(product._id)
+        .populate("category")
+        .populate("createdBy", "name email");
 
       res.status(201).json({
         success: true,

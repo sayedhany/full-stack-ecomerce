@@ -6,6 +6,7 @@ import {
   computed,
   CUSTOM_ELEMENTS_SCHEMA,
   PLATFORM_ID,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -30,6 +31,7 @@ register();
   imports: [CommonModule, FormsModule, RouterLink, TranslateModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class HomeComponent implements OnInit {
@@ -40,6 +42,7 @@ export class HomeComponent implements OnInit {
   private platformId = inject(PLATFORM_ID);
 
   isBrowser = isPlatformBrowser(this.platformId);
+  Math = Math; // Expose Math to template
 
   products = signal<Product[]>([]);
   categories = signal<Category[]>([]);
@@ -47,6 +50,12 @@ export class HomeComponent implements OnInit {
 
   searchTerm = signal<string>('');
   selectedCategory = signal<string>('');
+
+  // Pagination
+  currentPage = signal<number>(1);
+  totalPages = signal<number>(1);
+  totalProducts = signal<number>(0);
+  itemsPerPage = 10;
 
   filteredProducts = computed(() => {
     let filtered = this.products();
@@ -122,12 +131,21 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  loadProducts(): void {
+  loadProducts(page: number = 1): void {
     this.loading.set(true);
-    this.productService.getProducts().subscribe({
+    this.currentPage.set(page);
+
+    this.productService.getProducts(page, this.itemsPerPage).subscribe({
       next: (response) => {
         this.products.set(response.data);
+        this.totalPages.set(response.pages);
+        this.totalProducts.set(response.total);
         this.loading.set(false);
+
+        // Scroll to top when page changes
+        if (this.isBrowser && page > 1) {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
       },
       error: (error) => {
         console.error('Error loading products:', error);
@@ -136,14 +154,57 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  onPageChange(page: number): void {
+    if (page >= 1 && page <= this.totalPages()) {
+      this.loadProducts(page);
+    }
+  }
+
+  getPaginationArray(): number[] {
+    const total = this.totalPages();
+    const current = this.currentPage();
+    const delta = 2; // Number of pages to show on each side
+    const range: number[] = [];
+
+    for (
+      let i = Math.max(2, current - delta);
+      i <= Math.min(total - 1, current + delta);
+      i++
+    ) {
+      range.push(i);
+    }
+
+    if (current - delta > 2) {
+      range.unshift(-1); // -1 represents ellipsis
+    }
+    if (current + delta < total - 1) {
+      range.push(-1); // -1 represents ellipsis
+    }
+
+    range.unshift(1);
+    if (total > 1) {
+      range.push(total);
+    }
+
+    return range;
+  }
+
   onSearchChange(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
     this.searchTerm.set(value);
+    // Reset to first page when searching
+    if (this.currentPage() !== 1) {
+      this.loadProducts(1);
+    }
   }
 
   onCategoryChange(event: Event): void {
     const value = (event.target as HTMLSelectElement).value;
     this.selectedCategory.set(value);
+    // Reset to first page when filtering
+    if (this.currentPage() !== 1) {
+      this.loadProducts(1);
+    }
   }
 
   getLocalizedName(item: { name: { en: string; ar: string } }): string {

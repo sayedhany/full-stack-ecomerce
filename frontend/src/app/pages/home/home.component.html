@@ -3,11 +3,13 @@
   @if (isBrowser) {
   <section class="carousel-section" aria-label="Featured Products">
     <swiper-container 
-      loop="true" 
-      autoplay="true" 
+      [attr.loop]="carouselImages.length > 1 ? 'true' : 'false'"
+      [attr.autoplay]="carouselImages.length > 1 ? 'true' : 'false'"
       pagination="true" 
-      navigation="true"
-      [attr.autoplay-delay]="3000">
+      [attr.navigation]="carouselImages.length > 1 ? 'true' : 'false'"
+      [attr.autoplay-delay]="3000"
+      slides-per-view="1"
+      space-between="0">
       @for (image of carouselImages; track image) {
         <swiper-slide>
           <div class="carousel-slide" [style.background-image]="'url(' + image + ')'">
@@ -91,6 +93,48 @@
             </article>
           }
         </div>
+
+        <!-- Pagination -->
+        @if (totalPages() > 1) {
+          <nav class="pagination" role="navigation" aria-label="Pagination">
+            <button 
+              class="pagination-btn prev"
+              [disabled]="currentPage() === 1"
+              (click)="onPageChange(currentPage() - 1)"
+              [attr.aria-label]="'Previous page'">
+              ←
+            </button>
+
+            @for (page of getPaginationArray(); track page) {
+              @if (page === -1) {
+                <span class="pagination-ellipsis">...</span>
+              } @else {
+                <button 
+                  class="pagination-btn"
+                  [class.active]="currentPage() === page"
+                  (click)="onPageChange(page)"
+                  [attr.aria-label]="'Page ' + page"
+                  [attr.aria-current]="currentPage() === page ? 'page' : null">
+                  {{ page }}
+                </button>
+              }
+            }
+
+            <button 
+              class="pagination-btn next"
+              [disabled]="currentPage() === totalPages()"
+              (click)="onPageChange(currentPage() + 1)"
+              [attr.aria-label]="'Next page'">
+              →
+            </button>
+          </nav>
+
+          <div class="pagination-info">
+            {{ 'SHOWING' | translate }} {{ (currentPage() - 1) * itemsPerPage + 1 }} - 
+            {{ Math.min(currentPage() * itemsPerPage, totalProducts()) }} 
+            {{ 'OF' | translate }} {{ totalProducts() }} {{ 'PRODUCTS' | translate }}
+          </div>
+        }
       }
     </div>
   </section>
