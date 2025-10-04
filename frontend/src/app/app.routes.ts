@@ -1,39 +1,53 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './pages/home/home.component';
-import { ProductDetailsComponent } from './pages/product-details/product-details.component';
-import { ContactComponent } from './pages/contact/contact.component';
-import { LoginComponent } from './pages/admin/login/login.component';
-import { DashboardComponent } from './pages/admin/dashboard/dashboard.component';
-import { AdminProductsComponent } from './pages/admin/admin-products/admin-products.component';
-import { AdminCategoriesComponent } from './pages/admin/admin-categories/admin-categories.component';
-import { AdminUsersComponent } from './pages/admin/admin-users/admin-users.component';
 import { authGuard } from './guards/auth.guard';
+import { PublicLayoutComponent } from './layouts/public-layout/public-layout.component';
+import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 
 export const routes: Routes = [
   // Public Routes with Language
   {
     path: 'en',
+    component: PublicLayoutComponent,
     children: [
       {
         path: '',
-        component: HomeComponent,
+        loadComponent: () =>
+          import('./pages/home/home.component').then((m) => m.HomeComponent),
       },
       {
         path: 'product/:slug',
-        component: ProductDetailsComponent,
+        loadComponent: () =>
+          import('./pages/product-details/product-details.component').then(
+            (m) => m.ProductDetailsComponent
+          ),
       },
       {
         path: 'contact',
-        component: ContactComponent,
+        loadComponent: () =>
+          import('./pages/contact/contact.component').then(
+            (m) => m.ContactComponent
+          ),
       },
-      // Admin Routes (English)
+    ],
+  },
+  // Admin Routes (English)
+  {
+    path: 'en/admin',
+    component: AdminLayoutComponent,
+    children: [
       {
-        path: 'admin/login',
-        component: LoginComponent,
+        path: 'login',
+        loadComponent: () =>
+          import('./pages/admin/login/login.component').then(
+            (m) => m.LoginComponent
+          ),
       },
       {
-        path: 'admin/dashboard',
-        component: DashboardComponent,
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./pages/admin/dashboard/dashboard.component').then(
+            (m) => m.DashboardComponent
+          ),
         canActivate: [authGuard],
         children: [
           {
@@ -43,15 +57,24 @@ export const routes: Routes = [
           },
           {
             path: 'products',
-            component: AdminProductsComponent,
+            loadComponent: () =>
+              import(
+                './pages/admin/admin-products/admin-products.component'
+              ).then((m) => m.AdminProductsComponent),
           },
           {
             path: 'categories',
-            component: AdminCategoriesComponent,
+            loadComponent: () =>
+              import(
+                './pages/admin/admin-categories/admin-categories.component'
+              ).then((m) => m.AdminCategoriesComponent),
           },
           {
             path: 'users',
-            component: AdminUsersComponent,
+            loadComponent: () =>
+              import('./pages/admin/admin-users/admin-users.component').then(
+                (m) => m.AdminUsersComponent
+              ),
           },
         ],
       },
@@ -59,27 +82,47 @@ export const routes: Routes = [
   },
   {
     path: 'ar',
+    component: PublicLayoutComponent,
     children: [
       {
         path: '',
-        component: HomeComponent,
+        loadComponent: () =>
+          import('./pages/home/home.component').then((m) => m.HomeComponent),
       },
       {
         path: 'product/:slug',
-        component: ProductDetailsComponent,
+        loadComponent: () =>
+          import('./pages/product-details/product-details.component').then(
+            (m) => m.ProductDetailsComponent
+          ),
       },
       {
         path: 'contact',
-        component: ContactComponent,
+        loadComponent: () =>
+          import('./pages/contact/contact.component').then(
+            (m) => m.ContactComponent
+          ),
       },
-      // Admin Routes (Arabic)
+    ],
+  },
+  // Admin Routes (Arabic)
+  {
+    path: 'ar/admin',
+    component: AdminLayoutComponent,
+    children: [
       {
-        path: 'admin/login',
-        component: LoginComponent,
+        path: 'login',
+        loadComponent: () =>
+          import('./pages/admin/login/login.component').then(
+            (m) => m.LoginComponent
+          ),
       },
       {
-        path: 'admin/dashboard',
-        component: DashboardComponent,
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./pages/admin/dashboard/dashboard.component').then(
+            (m) => m.DashboardComponent
+          ),
         canActivate: [authGuard],
         children: [
           {
@@ -89,15 +132,24 @@ export const routes: Routes = [
           },
           {
             path: 'products',
-            component: AdminProductsComponent,
+            loadComponent: () =>
+              import(
+                './pages/admin/admin-products/admin-products.component'
+              ).then((m) => m.AdminProductsComponent),
           },
           {
             path: 'categories',
-            component: AdminCategoriesComponent,
+            loadComponent: () =>
+              import(
+                './pages/admin/admin-categories/admin-categories.component'
+              ).then((m) => m.AdminCategoriesComponent),
           },
           {
             path: 'users',
-            component: AdminUsersComponent,
+            loadComponent: () =>
+              import('./pages/admin/admin-users/admin-users.component').then(
+                (m) => m.AdminUsersComponent
+              ),
           },
         ],
       },

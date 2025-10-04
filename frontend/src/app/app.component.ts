@@ -3,19 +3,11 @@ import { RouterOutlet } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { LanguageService } from './services/translation.service';
-import { HeaderComponent } from './components/header/header.component';
-import { FooterComponent } from './components/footer/footer.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [
-    RouterOutlet,
-    TranslateModule,
-    CommonModule,
-    HeaderComponent,
-    FooterComponent,
-  ],
+  imports: [RouterOutlet, TranslateModule, CommonModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })

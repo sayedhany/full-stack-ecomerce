@@ -1,31 +1,43 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { CategoryService } from '../../../services/category.service';
 import { Category } from '../../../models/product.model';
 
 @Component({
   selector: 'app-admin-categories',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
   templateUrl: './admin-categories.component.html',
   styleUrl: './admin-categories.component.scss',
 })
 export class AdminCategoriesComponent implements OnInit {
   private categoryService = inject(CategoryService);
+  private fb = inject(FormBuilder);
 
   categories = signal<Category[]>([]);
   loading = signal(false);
   showModal = signal(false);
   editingCategory = signal<Category | null>(null);
 
-  formData = {
-    name_en: '',
-    name_ar: '',
-  };
+  categoryForm!: FormGroup;
 
   ngOnInit(): void {
+    this.initForm();
     this.loadCategories();
+  }
+
+  initForm(): void {
+    this.categoryForm = this.fb.group({
+      name_en: ['', [Validators.required]],
+      name_ar: ['', [Validators.required]],
+    });
   }
 
   loadCategories(): void {
@@ -43,33 +55,37 @@ export class AdminCategoriesComponent implements OnInit {
 
   openAddModal(): void {
     this.editingCategory.set(null);
-    this.formData = {
+    this.categoryForm.reset({
       name_en: '',
       name_ar: '',
-    };
+    });
     this.showModal.set(true);
   }
 
   openEditModal(category: Category): void {
     this.editingCategory.set(category);
-    this.formData = {
+    this.categoryForm.patchValue({
       name_en: category.name.en,
       name_ar: category.name.ar,
-    };
+    });
     this.showModal.set(true);
   }
 
   closeModal(): void {
     this.showModal.set(false);
     this.editingCategory.set(null);
+    this.categoryForm.reset();
   }
 
-  onSubmit(event?: Event): void {
-    if (event) {
-      event.preventDefault();
+  onSubmit(): void {
+    if (this.categoryForm.invalid) {
+      Object.keys(this.categoryForm.controls).forEach((key) => {
+        this.categoryForm.get(key)?.markAsTouched();
+      });
+      return;
     }
 
-    const formValue = this.formData;
+    const formValue = this.categoryForm.value;
     const categoryData = {
       name: {
         en: formValue.name_en,

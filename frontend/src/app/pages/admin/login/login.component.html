@@ -2,11 +2,11 @@
   <div class="login-container">
     <div class="login-card">
       <div class="login-header">
-        <h1>Admin Login</h1>
-        <p>Sign in to access the admin dashboard</p>
+        <h1>{{ 'ADMIN.LOGIN' | translate }}</h1>
+        <p>{{ 'ADMIN.DASHBOARD' | translate }}</p>
       </div>
 
-      <form class="login-form" (submit)="onSubmit()">
+      <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         @if (error()) {
           <div class="error-message" role="alert">
             {{ error() }}
@@ -14,40 +14,48 @@
         }
 
         <div class="form-group">
-          <label for="email">Email</label>
+          <label for="email">{{ 'ADMIN.EMAIL_LABEL' | translate }}</label>
           <input
             id="email"
             type="email"
-            [value]="email()"
-            (input)="onEmailChange($event)"
+            formControlName="email"
             placeholder="admin@example.com"
             required
             autocomplete="email"
           />
+          @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
+            @if (loginForm.get('email')?.hasError('required')) {
+              <span class="error">{{ 'ADMIN.REQUIRED_FIELD' | translate }}</span>
+            } @else if (loginForm.get('email')?.hasError('email')) {
+              <span class="error">{{ 'ADMIN.INVALID_EMAIL' | translate }}</span>
+            }
+          }
         </div>
 
         <div class="form-group">
-          <label for="password">Password</label>
+          <label for="password">{{ 'ADMIN.PASSWORD_LABEL' | translate }}</label>
           <input
             id="password"
             type="password"
-            [value]="password()"
-            (input)="onPasswordChange($event)"
+            formControlName="password"
             placeholder="••••••••"
             required
             autocomplete="current-password"
           />
+          @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+            <span class="error">{{ 'ADMIN.REQUIRED_FIELD' | translate }}</span>
+          }
         </div>
 
         <button
           type="submit"
           class="submit-btn"
-          [disabled]="loading()"
+          [disabled]="loading() || loginForm.invalid"
         >
           @if (loading()) {
-            <span>Signing in...</span>
+            <span>{{ 'LOADING' | translate }}</span>
           } @else {
-            <span>Sign In</span>
+            <span>{{ 'ADMIN.LOGIN_BUTTON' | translate }}</span>
           }
         </button>
       </form>

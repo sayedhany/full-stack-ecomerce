@@ -396,7 +396,7 @@ router.post("/", protect, authorize("admin"), async (req, res) => {
  *   put:
  *     summary: Update a product
  *     tags: [Products]
- *     description: Update an existing product by ID
+ *     description: Update an existing product by ID (supports both JSON and multipart/form-data for image updates)
  *     parameters:
  *       - in: path
  *         name: id
@@ -428,6 +428,32 @@ router.post("/", protect, authorize("admin"), async (req, res) => {
  *                   ar: لابتوب برو ١٥ (٢٠٢٤)
  *                 price: 1399.99
  *                 isActive: true
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name_en:
+ *                 type: string
+ *               name_ar:
+ *                 type: string
+ *               description_en:
+ *                 type: string
+ *               description_ar:
+ *                 type: string
+ *               price:
+ *                 type: number
+ *               slug_en:
+ *                 type: string
+ *               slug_ar:
+ *                 type: string
+ *               category:
+ *                 type: string
+ *               isActive:
+ *                 type: boolean
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: New product image (optional)
  *     responses:
  *       200:
  *         description: Product updated successfully
@@ -451,41 +477,90 @@ router.post("/", protect, authorize("admin"), async (req, res) => {
  *     security:
  *       - bearerAuth: []
  */
-router.put("/:id", protect, authorize("admin"), async (req, res) => {
-  try {
-    // Add updatedBy from authenticated user
-    const updateData = {
-      ...req.body,
-      updatedBy: req.user._id,
-    };
+router.put(
+  "/:id",
+  protect,
+  authorize("admin"),
+  upload.single("image"),
+  processImage,
+  async (req, res) => {
+    try {
+      let updateData = {};
 
-    const product = await Product.findByIdAndUpdate(req.params.id, updateData, {
-      new: true,
-      runValidators: true,
-    })
-      .populate("category")
-      .populate("createdBy updatedBy", "name email");
+      // Check if this is a multipart/form-data request (with file upload)
+      if (req.file || req.body.name_en) {
+        // Multipart form data - construct the object
+        if (req.body.name_en || req.body.name_ar) {
+          updateData.name = {};
+          if (req.body.name_en) updateData.name.en = req.body.name_en;
+          if (req.body.name_ar) updateData.name.ar = req.body.name_ar;
+        }
 
-    if (!product) {
-      return res.status(404).json({
+        if (req.body.description_en || req.body.description_ar) {
+          updateData.description = {};
+          if (req.body.description_en)
+            updateData.description.en = req.body.description_en;
+          if (req.body.description_ar)
+            updateData.description.ar = req.body.description_ar;
+        }
+
+        if (req.body.slug_en || req.body.slug_ar) {
+          updateData.slug = {};
+          if (req.body.slug_en) updateData.slug.en = req.body.slug_en;
+          if (req.body.slug_ar) updateData.slug.ar = req.body.slug_ar;
+        }
+
+        if (req.body.price) updateData.price = req.body.price;
+        if (req.body.category) updateData.category = req.body.category;
+        if (req.body.isActive !== undefined)
+          updateData.isActive = req.body.isActive;
+
+        // Add new image URL if file was uploaded
+        if (req.file) {
+          updateData.image = `${req.protocol}://${req.get("host")}/uploads/${
+            req.file.filename
+          }`;
+        }
+      } else {
+        // JSON request - use body as is
+        updateData = { ...req.body };
+      }
+
+      // Add updatedBy from authenticated user
+      updateData.updatedBy = req.user._id;
+
+      const product = await Product.findByIdAndUpdate(
+        req.params.id,
+        updateData,
+        {
+          new: true,
+          runValidators: true,
+        }
+      )
+        .populate("category")
+        .populate("createdBy updatedBy", "name email");
+
+      if (!product) {
+        return res.status(404).json({
+          success: false,
+          message: "Product not found",
+        });
+      }
+
+      res.json({
+        success: true,
+        message: "Product updated successfully",
+        data: product,
+      });
+    } catch (error) {
+      res.status(400).json({
         success: false,
-        message: "Product not found",
+        message: "Error updating product",
+        error: error.message,
       });
     }
-
-    res.json({
-      success: true,
-      message: "Product updated successfully",
-      data: product,
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: "Error updating product",
-      error: error.message,
-    });
   }
-});
+);
 
 /**
  * @swagger

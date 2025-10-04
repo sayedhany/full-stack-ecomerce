@@ -2,31 +2,34 @@
   <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-header">
-      <h2>Admin Panel</h2>
+      <h2>{{ 'ADMIN.DASHBOARD' | translate }}</h2>
       <p>{{ authService.currentUser()?.name }}</p>
     </div>
 
     <nav class="sidebar-nav">
       @for (item of menuItems; track item.path) {
         <a
-          [routerLink]="['/admin/dashboard', item.path]"
+          [routerLink]="[ item.path]"
           routerLinkActive="active"
           class="nav-item"
         >
           <span class="icon">{{ item.icon }}</span>
-          <span>{{ item.label }}</span>
+          <span>{{ item.label | translate }}</span>
         </a>
       }
     </nav>
 
     <button class="logout-btn" (click)="logout()">
       <span>🚪</span>
-      <span>Logout</span>
+      <span>{{ 'ADMIN.LOGOUT' | translate }}</span>
     </button>
   </aside>
 
   <!-- Main Content -->
   <main class="dashboard-content">
-    <router-outlet></router-outlet>
+    <app-header/>
+    <section>
+      <router-outlet></router-outlet>
+    </section>
   </main>
 </div>

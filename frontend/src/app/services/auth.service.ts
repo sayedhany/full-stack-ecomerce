@@ -8,7 +8,7 @@ export interface User {
   _id: string;
   name: string;
   email: string;
-  role: 'admin' | 'user';
+  role: 'admin' | 'customer';
 }
 
 export interface LoginResponse {
@@ -30,7 +30,7 @@ export class AuthService {
   currentUser = signal<User | null>(null);
 
   constructor() {
-    this.loadUserFromStorage();
+    this.loadCustomerFromStorage();
   }
 
   login(email: string, password: string): Observable<LoginResponse> {
@@ -48,7 +48,7 @@ export class AuthService {
   logout(): void {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      localStorage.removeItem('customer');
       // Get current language from URL
       const urlParts = this.router.url.split('/');
       const lang = urlParts[1] === 'ar' ? 'ar' : 'en';
@@ -82,19 +82,19 @@ export class AuthService {
   private setSession(token: string, user: User): void {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('customer', JSON.stringify(user));
     }
     this.currentUser.set(user);
   }
 
-  private loadUserFromStorage(): void {
+  private loadCustomerFromStorage(): void {
     if (isPlatformBrowser(this.platformId)) {
-      const userStr = localStorage.getItem('user');
-      if (userStr) {
+      const customerStr = localStorage.getItem('customer');
+      if (customerStr) {
         try {
-          this.currentUser.set(JSON.parse(userStr));
+          this.currentUser.set(JSON.parse(customerStr));
         } catch (e) {
-          console.error('Failed to parse user from storage', e);
+          console.error('Failed to parse customer from storage', e);
         }
       }
     }

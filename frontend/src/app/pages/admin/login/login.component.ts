@@ -1,24 +1,30 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../../services/auth.service';
 import { LanguageService } from '../../../services/translation.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
   private languageService = inject(LanguageService);
+  private fb = inject(FormBuilder);
 
-  email = signal('');
-  password = signal('');
+  loginForm!: FormGroup;
   error = signal('');
   loading = signal(false);
 
@@ -26,27 +32,31 @@ export class LoginComponent {
     return this.languageService.getCurrentLanguage();
   }
 
-  onEmailChange(event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
-    this.email.set(value);
+  ngOnInit(): void {
+    this.initForm();
   }
 
-  onPasswordChange(event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
-    this.password.set(value);
+  initForm(): void {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required]],
+    });
   }
 
   onSubmit(): void {
-    this.error.set('');
-    this.loading.set(true);
-
-    if (!this.email() || !this.password()) {
-      this.error.set('Please enter both email and password');
-      this.loading.set(false);
+    if (this.loginForm.invalid) {
+      Object.keys(this.loginForm.controls).forEach((key) => {
+        this.loginForm.get(key)?.markAsTouched();
+      });
       return;
     }
 
-    this.authService.login(this.email(), this.password()).subscribe({
+    this.error.set('');
+    this.loading.set(true);
+
+    const { email, password } = this.loginForm.value;
+
+    this.authService.login(email, password).subscribe({
       next: (response) => {
         this.loading.set(false);
         if (response.success && response.user.role === 'admin') {

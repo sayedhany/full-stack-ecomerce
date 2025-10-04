@@ -390,4 +390,304 @@ router.get("/users", protect, authorize("admin"), async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/auth/update-profile:
+ *   put:
+ *     summary: Update current user profile
+ *     tags: [Authentication]
+ *     description: Update the authenticated user's name and email
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: John Smith
+ *               email:
+ *                 type: string
+ *                 example: johnsmith@example.com
+ *     responses:
+ *       200:
+ *         description: Profile updated successfully
+ *       400:
+ *         description: Email already exists
+ *       401:
+ *         description: Not authorized
+ */
+router.put("/update-profile", protect, async (req, res) => {
+  try {
+    const { name, email } = req.body;
+
+    // Check if email is being changed and if it's already taken
+    if (email && email !== req.user.email) {
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        return res.status(400).json({
+          success: false,
+          message: "Email already in use",
+        });
+      }
+    }
+
+    // Update user
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        name: name || req.user.name,
+        email: email || req.user.email,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    ).select("-password");
+
+    res.json({
+      success: true,
+      message: "Profile updated successfully",
+      user: updatedUser,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Error updating profile",
+      error: error.message,
+    });
+  }
+});
+
+/**
+ * @swagger
+ * /api/auth/change-password:
+ *   put:
+ *     summary: Change current user password
+ *     tags: [Authentication]
+ *     description: Change the authenticated user's password
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - currentPassword
+ *               - newPassword
+ *             properties:
+ *               currentPassword:
+ *                 type: string
+ *                 example: oldpassword123
+ *               newPassword:
+ *                 type: string
+ *                 minLength: 6
+ *                 example: newpassword123
+ *     responses:
+ *       200:
+ *         description: Password changed successfully
+ *       401:
+ *         description: Current password is incorrect
+ */
+router.put("/change-password", protect, async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide current password and new password",
+      });
+    }
+
+    // Get user with password
+    const user = await User.findById(req.user._id).select("+password");
+
+    // Check current password
+    const isPasswordCorrect = await user.comparePassword(currentPassword);
+    if (!isPasswordCorrect) {
+      return res.status(401).json({
+        success: false,
+        message: "Current password is incorrect",
+      });
+    }
+
+    // Update password
+    user.password = newPassword;
+    await user.save();
+
+    res.json({
+      success: true,
+      message: "Password changed successfully",
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Error changing password",
+      error: error.message,
+    });
+  }
+});
+
+/**
+ * @swagger
+ * /api/auth/users/{id}:
+ *   put:
+ *     summary: Update user by ID (Admin only)
+ *     tags: [Authentication]
+ *     description: Update any user's information (admin access required)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: User ID
+ *         example: 507f1f77bcf86cd799439011
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: John Doe
+ *               email:
+ *                 type: string
+ *                 example: john@example.com
+ *               role:
+ *                 type: string
+ *                 enum: [admin, customer]
+ *                 example: customer
+ *               isActive:
+ *                 type: boolean
+ *                 example: true
+ *     responses:
+ *       200:
+ *         description: User updated successfully
+ *       403:
+ *         description: Not authorized (admin only)
+ *       404:
+ *         description: User not found
+ */
+router.put("/users/:id", protect, authorize("admin"), async (req, res) => {
+  try {
+    const { name, email, role, isActive } = req.body;
+
+    // Check if email is being changed and if it's already taken
+    if (email) {
+      const user = await User.findById(req.params.id);
+      if (user && email !== user.email) {
+        const existingUser = await User.findOne({ email });
+        if (existingUser && existingUser._id.toString() !== req.params.id) {
+          return res.status(400).json({
+            success: false,
+            message: "Email already in use",
+          });
+        }
+      }
+    }
+
+    // Build update object
+    const updateData = {};
+    if (name) updateData.name = name;
+    if (email) updateData.email = email;
+    if (role) updateData.role = role;
+    if (isActive !== undefined) updateData.isActive = isActive;
+
+    // Update user
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      {
+        new: true,
+        runValidators: true,
+      }
+    ).select("-password");
+
+    if (!updatedUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "User updated successfully",
+      user: updatedUser,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Error updating user",
+      error: error.message,
+    });
+  }
+});
+
+/**
+ * @swagger
+ * /api/auth/users/{id}:
+ *   delete:
+ *     summary: Delete user by ID (Admin only)
+ *     tags: [Authentication]
+ *     description: Delete a user (admin access required)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: User ID
+ *         example: 507f1f77bcf86cd799439011
+ *     responses:
+ *       200:
+ *         description: User deleted successfully
+ *       403:
+ *         description: Not authorized (admin only)
+ *       404:
+ *         description: User not found
+ */
+router.delete("/users/:id", protect, authorize("admin"), async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "User deleted successfully",
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error deleting user",
+      error: error.message,
+    });
+  }
+});
+
 module.exports = router;

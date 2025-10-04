@@ -71,6 +71,25 @@ export class ProductService {
     );
   }
 
+  createProductWithImage(
+    formData: FormData
+  ): Observable<{ success: boolean; data: Product }> {
+    return this.http.post<{ success: boolean; data: Product }>(
+      `${this.apiUrl}/api/products/with-image`,
+      formData
+    );
+  }
+
+  updateProductWithImage(
+    id: string,
+    formData: FormData
+  ): Observable<{ success: boolean; data: Product }> {
+    return this.http.put<{ success: boolean; data: Product }>(
+      `${this.apiUrl}/api/products/${id}`,
+      formData
+    );
+  }
+
   private generateSlug(text: string): string {
     return text
       .toString()

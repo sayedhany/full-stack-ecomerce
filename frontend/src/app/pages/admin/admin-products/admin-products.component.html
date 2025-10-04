@@ -1,25 +1,25 @@
 <div class="admin-page">
   <div class="page-header">
-    <h1>Products Management</h1>
+    <h1>{{ 'ADMIN.PRODUCTS_MANAGEMENT' | translate }}</h1>
     <button class="add-btn" (click)="openAddModal()">
       <span>➕</span>
-      <span>Add Product</span>
+      <span>{{ 'ADMIN.ADD_PRODUCT' | translate }}</span>
     </button>
   </div>
 
   @if (loading()) {
-    <div class="loading">Loading products...</div>
+    <div class="loading">{{ 'ADMIN.LOADING_PRODUCTS' | translate }}</div>
   } @else {
     <div class="table-container">
       <table class="data-table">
         <thead>
           <tr>
-            <th>Image</th>
-            <th>Name (EN)</th>
-            <th>Name (AR)</th>
-            <th>Category</th>
-            <th>Price</th>
-            <th>Actions</th>
+            <th>{{ 'ADMIN.IMAGE' | translate }}</th>
+            <th>{{ 'ADMIN.NAME_EN' | translate }}</th>
+            <th>{{ 'ADMIN.NAME_AR' | translate }}</th>
+            <th>{{ 'CATEGORY' | translate }}</th>
+            <th>{{ 'PRICE' | translate }}</th>
+            <th>{{ 'ADMIN.ACTIONS' | translate }}</th>
           </tr>
         </thead>
         <tbody>
@@ -30,11 +30,7 @@
               </td>
               <td>{{ product.name.en }}</td>
               <td>{{ product.name.ar }}</td>
-              <td>
-                @if (product.category && typeof product.category !== 'string') {
-                  {{ product.category.name.en }}
-                }
-              </td>
+              <td>{{ getCategoryName(product) }}</td>
               <td>${{ product.price }}</td>
               <td>
                 <div class="action-buttons">
@@ -56,17 +52,17 @@
           [disabled]="currentPage() === 1"
           (click)="onPageChange(currentPage() - 1)"
         >
-          Previous
+          {{ 'PREVIOUS' | translate }}
         </button>
         <span class="page-info">
-          Page {{ currentPage() }} of {{ totalPages() }}
+          {{ 'ADMIN.PAGE' | translate }} {{ currentPage() }} {{ 'OF' | translate }} {{ totalPages() }}
         </span>
         <button
           class="pagination-btn"
           [disabled]="currentPage() === totalPages()"
           (click)="onPageChange(currentPage() + 1)"
         >
-          Next
+          {{ 'NEXT' | translate }}
         </button>
       </div>
     }
@@ -77,92 +73,115 @@
     <div class="modal-overlay" (click)="closeModal()">
       <div class="modal-content" (click)="$event.stopPropagation()">
         <div class="modal-header">
-          <h2>{{ editingProduct() ? 'Edit Product' : 'Add New Product' }}</h2>
+          <h2>{{ editingProduct() ? ('ADMIN.EDIT_PRODUCT' | translate) : ('ADMIN.ADD_PRODUCT' | translate) }}</h2>
           <button class="close-btn" (click)="closeModal()">✕</button>
         </div>
 
-        <form class="modal-form" (ngSubmit)="onSubmit()" #productForm="ngForm">
+        <form class="modal-form" [formGroup]="productForm" (ngSubmit)="onSubmit()">
           <div class="form-row">
             <div class="form-group">
-              <label>Name (English)</label>
+              <label>{{ 'ADMIN.NAME_EN' | translate }}</label>
               <input
                 type="text"
-                [(ngModel)]="formData.name_en"
-                name="name_en"
+                formControlName="name_en"
                 required
               />
+              @if (productForm.get('name_en')?.invalid && productForm.get('name_en')?.touched) {
+                <span class="error">{{ 'ADMIN.REQUIRED_FIELD' | translate }}</span>
+              }
             </div>
             <div class="form-group">
-              <label>Name (Arabic)</label>
+              <label>{{ 'ADMIN.NAME_AR' | translate }}</label>
               <input
                 type="text"
-                [(ngModel)]="formData.name_ar"
-                name="name_ar"
+                formControlName="name_ar"
                 required
               />
+              @if (productForm.get('name_ar')?.invalid && productForm.get('name_ar')?.touched) {
+                <span class="error">{{ 'ADMIN.REQUIRED_FIELD' | translate }}</span>
+              }
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label>Description (English)</label>
+              <label>{{ 'ADMIN.DESCRIPTION_EN' | translate }}</label>
               <textarea
-                [(ngModel)]="formData.description_en"
-                name="description_en"
+                formControlName="description_en"
                 rows="3"
                 required
               ></textarea>
+              @if (productForm.get('description_en')?.invalid && productForm.get('description_en')?.touched) {
+                <span class="error">{{ 'ADMIN.REQUIRED_FIELD' | translate }}</span>
+              }
             </div>
             <div class="form-group">
-              <label>Description (Arabic)</label>
+              <label>{{ 'ADMIN.DESCRIPTION_AR' | translate }}</label>
               <textarea
-                [(ngModel)]="formData.description_ar"
-                name="description_ar"
+                formControlName="description_ar"
                 rows="3"
                 required
               ></textarea>
+              @if (productForm.get('description_ar')?.invalid && productForm.get('description_ar')?.touched) {
+                <span class="error">{{ 'ADMIN.REQUIRED_FIELD' | translate }}</span>
+              }
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label>Category</label>
-              <select [(ngModel)]="formData.category" name="category" required>
-                <option value="">Select Category</option>
+              <label>{{ 'CATEGORY' | translate }}</label>
+              <select formControlName="category" required>
+                <option value="">{{ 'ADMIN.SELECT_CATEGORY' | translate }}</option>
                 @for (category of categories(); track category._id) {
                   <option [value]="category._id">{{ category.name.en }}</option>
                 }
               </select>
+              @if (productForm.get('category')?.invalid && productForm.get('category')?.touched) {
+                <span class="error">{{ 'ADMIN.REQUIRED_FIELD' | translate }}</span>
+              }
             </div>
             <div class="form-group">
-              <label>Price</label>
+              <label>{{ 'PRICE' | translate }}</label>
               <input
                 type="number"
-                [(ngModel)]="formData.price"
-                name="price"
+                formControlName="price"
                 min="0"
                 step="0.01"
                 required
               />
+              @if (productForm.get('price')?.invalid && productForm.get('price')?.touched) {
+                <span class="error">{{ 'ADMIN.MIN_PRICE' | translate }}</span>
+              }
             </div>
           </div>
 
           <div class="form-group">
-            <label>Image URL</label>
+            <label>{{ 'ADMIN.PRODUCT_IMAGE' | translate }}</label>
             <input
-              type="url"
-              [(ngModel)]="formData.image"
-              name="image"
-              required
+              type="file"
+              accept="image/*"
+              (change)="onFileSelected($event)"
+              class="file-input"
             />
+            @if (imagePreview) {
+              <div class="image-preview">
+                <img [src]="imagePreview" alt="Product preview" />
+              </div>
+            }
+            @if (!editingProduct() && !selectedFile) {
+              <span class="helper-text">{{ 'ADMIN.IMAGE_REQUIRED' | translate }}</span>
+            } @else if (editingProduct() && !selectedFile) {
+              <span class="helper-text">{{ 'ADMIN.IMAGE_OPTIONAL_EDIT' | translate }}</span>
+            }
           </div>
 
           <div class="modal-actions">
             <button type="button" class="cancel-btn" (click)="closeModal()">
-              Cancel
+              {{ 'ADMIN.CANCEL' | translate }}
             </button>
-            <button type="submit" class="submit-btn">
-              <!-- {{ editingProduct() ? 'Update' : 'Create' }} -->
+            <button type="submit" class="submit-btn" [disabled]="productForm.invalid">
+              {{ editingProduct() ? ('ADMIN.UPDATE' | translate) : ('ADMIN.CREATE' | translate) }}
             </button>
           </div>
         </form>
