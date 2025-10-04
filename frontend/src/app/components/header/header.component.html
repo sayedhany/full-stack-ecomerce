@@ -1,0 +1,51 @@
+<header class="header">
+  <div class="container">
+    <div class="header-content">
+      <!-- Logo -->
+      <a [routerLink]="['/', currentLang]" class="logo">
+        <h1>{{ 'COMPANY_NAME' | translate }}</h1>
+      </a>
+
+      <!-- Navigation -->
+      <nav class="nav">
+        <a [routerLink]="['/', currentLang]" class="nav-link">
+          {{ 'HOME' | translate }}
+        </a>
+        <a [routerLink]="['/', currentLang, 'contact']" class="nav-link">
+          {{ 'CONTACT_US' | translate }}
+        </a>
+      </nav>
+
+      <!-- Actions -->
+      <div class="actions">
+        <!-- Theme Toggle -->
+        <button 
+          class="theme-toggle" 
+          (click)="toggleTheme()"
+          [attr.aria-label]="(themeService.isDarkMode() ? 'LIGHT_MODE' : 'DARK_MODE') | translate">
+          @if (themeService.isDarkMode()) {
+            ☀️
+          } @else {
+            🌙
+          }
+        </button>
+
+        <!-- Language Switcher -->
+        <div class="language-switcher">
+          <button 
+            (click)="switchLanguage('en')" 
+            [class.active]="currentLang === 'en'"
+            class="lang-btn">
+            EN
+          </button>
+          <button 
+            (click)="switchLanguage('ar')" 
+            [class.active]="currentLang === 'ar'"
+            class="lang-btn">
+            ع
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

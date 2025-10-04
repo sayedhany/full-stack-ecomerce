@@ -1,0 +1,42 @@
+<div class="contact-page">
+  <div class="container">
+    <h1 class="page-title">{{ 'CONTACT_US' | translate }}</h1>
+
+    <div class="contact-content">
+      <div class="contact-info-card">
+        <h2>{{ 'CONTACT_INFO' | translate }}</h2>
+        
+        <div class="contact-items">
+          <div class="contact-item">
+            <div class="icon">📧</div>
+            <div class="details">
+              <h3>{{ 'EMAIL' | translate }}</h3>
+              <a [href]="'mailto:' + contactInfo.email">{{ contactInfo.email }}</a>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <div class="icon">📱</div>
+            <div class="details">
+              <h3>{{ 'PHONE' | translate }}</h3>
+              <a [href]="'tel:' + contactInfo.phone">{{ contactInfo.phone }}</a>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <div class="icon">📍</div>
+            <div class="details">
+              <h3>{{ 'LOCATION' | translate }}</h3>
+              <p>{{ contactInfo.location }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="company-info">
+        <h2>{{ 'COMPANY_NAME' | translate }}</h2>
+        <p>{{ 'COMPANY_DESCRIPTION' | translate }}</p>
+      </div>
+    </div>
+  </div>
+</div>

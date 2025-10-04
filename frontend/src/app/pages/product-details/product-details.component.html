@@ -1,0 +1,43 @@
+<div class="product-details-page">
+  <div class="container">
+    @if (loading()) {
+      <div class="loading">{{ 'LOADING' | translate }}</div>
+    } @else if (product()) {
+      <div class="product-details">
+        <button class="back-button" (click)="goBack()">
+          ← {{ 'BACK_TO_PRODUCTS' | translate }}
+        </button>
+
+        <div class="product-content">
+          <div class="product-image-container">
+            <img [src]="product()!.image" [alt]="getLocalizedName(product()!)">
+          </div>
+
+          <div class="product-info">
+            <h1 class="product-title">{{ getLocalizedName(product()!) }}</h1>
+            
+            <div class="product-meta">
+              <span class="category">
+                {{ 'CATEGORY' | translate }}: 
+                <strong>{{ getLocalizedName(product()!.category) }}</strong>
+              </span>
+            </div>
+
+            <div class="product-price">
+              ${{ product()!.price }}
+            </div>
+
+            <div class="product-description-section">
+              <h2>{{ 'DESCRIPTION' | translate }}</h2>
+              <p class="product-description">{{ getLocalizedDescription(product()!) }}</p>
+            </div>
+
+            <button class="add-to-cart-btn">
+              {{ 'ADD_TO_CART' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>
