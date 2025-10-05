@@ -96,12 +96,14 @@ const corsOptions = {
       return callback(null, true);
     }
 
-    // Allow other origins if needed (add your production domains here)
-    const allowedOrigins = [
-      // Add your production domains here
-      // 'https://yourdomain.com',
-      // 'https://www.yourdomain.com'
-    ];
+    // Allow production origins from environment variable
+    const allowedOrigins = process.env.ALLOWED_ORIGINS
+      ? process.env.ALLOWED_ORIGINS.split(",").map((origin) => origin.trim())
+      : [
+          // Add your production domains here if not using env variable
+          // 'https://yourdomain.com',
+          // 'https://www.yourdomain.com'
+        ];
 
     if (allowedOrigins.includes(origin)) {
       return callback(null, true);

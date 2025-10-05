@@ -3,11 +3,17 @@
   "version": "1.0.0",
   "description": "E-commerce backend with Node.js, Express, and MongoDB",
   "main": "server/server.js",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0",
+    "pnpm": ">=8.0.0"
+  },
   "scripts": {
     "start": "node server/server.js",
     "dev": "nodemon server/server.js",
     "seed": "node server/seed.js",
     "create-admin": "node server/createSuperAdmin.js",
+    "railway:deploy": "npm start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
