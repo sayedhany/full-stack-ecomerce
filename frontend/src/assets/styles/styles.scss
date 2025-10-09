@@ -1,5 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
 
+/* Import Swiper styles */
+@import 'swiper/css';
+@import 'swiper/css/navigation';
+@import 'swiper/css/pagination';
+@import 'swiper/css/autoplay';
+
 /* Import reset styles */
 @import "./reset";
 

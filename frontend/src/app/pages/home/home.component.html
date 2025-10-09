@@ -3,11 +3,11 @@
   @if (isBrowser) {
   <section class="carousel-section" aria-label="Featured Products">
     <swiper-container 
-      [attr.loop]="carouselImages.length > 1 ? 'true' : 'false'"
-      [attr.autoplay]="carouselImages.length > 1 ? 'true' : 'false'"
+      [attr.loop]="carouselImages.length > 1 "
+      [attr.autoplay]="carouselImages.length > 1 "
       pagination="true" 
-      [attr.navigation]="carouselImages.length > 1 ? 'true' : 'false'"
-      [attr.autoplay-delay]="3000"
+      [attr.navigation]="carouselImages.length > 1 "
+      [attr.autoplay-delay]="50"
       slides-per-view="1"
       space-between="0">
       @for (image of carouselImages; track image) {

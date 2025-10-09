@@ -13,10 +13,14 @@ import {
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { importProvidersFrom } from '@angular/core';
 import { Observable } from 'rxjs';
+import { register } from 'swiper/element/bundle';
 
 import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
 import { authInterceptor } from './interceptors/auth.interceptor';
+
+// Register Swiper custom elements
+register();
 
 // Simple TranslateLoader for HTTP
 export class HttpTranslateLoader implements TranslateLoader {
