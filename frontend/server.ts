@@ -19,7 +19,6 @@ export function app(): express.Express {
   server.set('view engine', 'html');
   server.set('views', browserDistFolder);
 
-
   // Serve static files from /browser (this must come before the SSR handler)
   server.use(
     express.static(browserDistFolder, {
@@ -32,6 +31,15 @@ export function app(): express.Express {
   server.use((req, res, next) => {
     console.log(`[DEBUG] Request for: ${req.path}, Method: ${req.method}`);
     next();
+  });
+
+  // Redirect root to default language
+  server.get('/', (req, res) => {
+    // Check if user has a language preference in cookie
+    const cookieLang = req.cookies ? req.cookies['app-language'] : null;
+    const defaultLang = ['en', 'ar'].includes(cookieLang) ? cookieLang : 'en';
+    console.log(`[DEBUG] Redirecting / to /${defaultLang}`);
+    res.redirect(302, `/${defaultLang}`);
   });
 
   // SSR handler for all routes (only for HTML routes, not static assets)
