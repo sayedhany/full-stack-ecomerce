@@ -9,6 +9,7 @@ This guide explains how to build and run your e-commerce backend using Docker.
 ## 📁 Docker Files Created
 
 ### 1. `Dockerfile`
+
 - **Base Image:** Node.js 20 Alpine (lightweight)
 - **Package Manager:** pnpm
 - **Security:** Non-root user
@@ -16,11 +17,13 @@ This guide explains how to build and run your e-commerce backend using Docker.
 - **Port:** 5000
 
 ### 2. `.dockerignore`
+
 - Excludes unnecessary files from Docker build
 - Keeps image size small
 - Protects sensitive files
 
 ### 3. `docker-compose.yml`
+
 - Multi-service setup
 - Backend + MongoDB + Nginx
 - Persistent volumes
@@ -97,6 +100,7 @@ docker images | grep ecommerce-backend
 ### Step 3: Run Container
 
 #### Option A: Simple Run (MongoDB Atlas)
+
 ```bash
 docker run -d \
   --name ecommerce-api \
@@ -106,6 +110,7 @@ docker run -d \
 ```
 
 #### Option B: With Local MongoDB
+
 ```bash
 # Start MongoDB first
 docker run -d \
@@ -127,6 +132,7 @@ docker run -d \
 ```
 
 #### Option C: Docker Compose (Recommended)
+
 ```bash
 # Start all services
 docker-compose up -d
@@ -143,11 +149,13 @@ docker-compose down
 ## 🔍 Container Management
 
 ### View Running Containers
+
 ```bash
 docker ps
 ```
 
 ### Check Logs
+
 ```bash
 # Backend logs
 docker logs ecommerce-api
@@ -160,6 +168,7 @@ docker-compose logs -f ecommerce-backend
 ```
 
 ### Access Container Shell
+
 ```bash
 # Access running container
 docker exec -it ecommerce-api sh
@@ -169,6 +178,7 @@ docker-compose exec ecommerce-backend sh
 ```
 
 ### Health Check
+
 ```bash
 # Check container health
 docker inspect ecommerce-api | grep Health -A 10
@@ -184,24 +194,28 @@ curl http://localhost:5000/api/health
 ### Services Included:
 
 #### 1. **ecommerce-backend**
+
 - Your Node.js API
 - Port: 5000
 - Health checks enabled
 - Persistent uploads volume
 
 #### 2. **mongodb** (Optional)
+
 - MongoDB 7.0
 - Port: 27017
 - Persistent data volume
 - Admin user: admin/password
 
 #### 3. **nginx** (Optional)
+
 - Reverse proxy
 - Load balancing
 - SSL termination
 - Ports: 80, 443
 
 ### Volumes:
+
 - `mongodb_data` - Database persistence
 - `uploads_data` - File uploads persistence
 
@@ -211,14 +225,14 @@ curl http://localhost:5000/api/health
 
 ### Environment Variables
 
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `MONGODB_URI` | ✅ | - | MongoDB connection string |
-| `NODE_ENV` | ✅ | production | Environment mode |
-| `PORT` | ❌ | 5000 | Server port |
-| `JWT_SECRET` | ✅ | - | JWT signing secret (32+ chars) |
-| `JWT_EXPIRE` | ❌ | 7d | JWT expiration time |
-| `ALLOWED_ORIGINS` | ❌ | - | CORS allowed origins |
+| Variable          | Required | Default    | Description                    |
+| ----------------- | -------- | ---------- | ------------------------------ |
+| `MONGODB_URI`     | ✅       | -          | MongoDB connection string      |
+| `NODE_ENV`        | ✅       | production | Environment mode               |
+| `PORT`            | ❌       | 5000       | Server port                    |
+| `JWT_SECRET`      | ✅       | -          | JWT signing secret (32+ chars) |
+| `JWT_EXPIRE`      | ❌       | 7d         | JWT expiration time            |
+| `ALLOWED_ORIGINS` | ❌       | -          | CORS allowed origins           |
 
 ### Volume Mounts
 
@@ -226,10 +240,10 @@ curl http://localhost:5000/api/health
 volumes:
   # Persistent uploads
   - uploads_data:/app/server/uploads
-  
+
   # Mount local uploads directory
   - ./server/uploads:/app/server/uploads
-  
+
   # Mount logs directory
   - ./logs:/app/logs
 ```
@@ -240,7 +254,7 @@ volumes:
 ports:
   # Map container port 5000 to host port 3000
   - "3000:5000"
-  
+
   # Map to specific host IP
   - "127.0.0.1:5000:5000"
 ```
@@ -250,12 +264,14 @@ ports:
 ## 🔐 Security Best Practices
 
 ### Dockerfile Security:
+
 - ✅ Non-root user (`ecommerce`)
 - ✅ Alpine Linux (minimal attack surface)
 - ✅ No sensitive files copied
 - ✅ Minimal dependencies
 
 ### Runtime Security:
+
 ```bash
 # Run with limited resources
 docker run -d \
@@ -270,6 +286,7 @@ docker run -d \
 ```
 
 ### Network Security:
+
 ```yaml
 networks:
   ecommerce-network:
@@ -333,18 +350,18 @@ spec:
         app: ecommerce-backend
     spec:
       containers:
-      - name: ecommerce-backend
-        image: ecommerce-backend:latest
-        ports:
-        - containerPort: 5000
-        env:
-        - name: NODE_ENV
-          value: "production"
-        - name: MONGODB_URI
-          valueFrom:
-            secretKeyRef:
-              name: ecommerce-secrets
-              key: mongodb-uri
+        - name: ecommerce-backend
+          image: ecommerce-backend:latest
+          ports:
+            - containerPort: 5000
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: ecommerce-secrets
+                  key: mongodb-uri
 ```
 
 ---
@@ -354,6 +371,7 @@ spec:
 ### Common Issues:
 
 #### 1. Container won't start
+
 ```bash
 # Check logs
 docker logs ecommerce-api
@@ -363,6 +381,7 @@ docker inspect ecommerce-api
 ```
 
 #### 2. Database connection failed
+
 ```bash
 # Test MongoDB connection
 docker exec -it ecommerce-api sh
@@ -376,6 +395,7 @@ mongoose.connect(process.env.MONGODB_URI)
 ```
 
 #### 3. Port already in use
+
 ```bash
 # Check what's using port 5000
 lsof -i :5000
@@ -385,6 +405,7 @@ docker run -p 3000:5000 ecommerce-backend
 ```
 
 #### 4. Permission denied for uploads
+
 ```bash
 # Fix uploads directory permissions
 docker exec -it ecommerce-api sh
@@ -406,6 +427,7 @@ curl -f http://localhost:5000/api/health
 ## 📈 Monitoring
 
 ### Container Stats
+
 ```bash
 # Resource usage
 docker stats ecommerce-api
@@ -415,6 +437,7 @@ docker system df
 ```
 
 ### Log Management
+
 ```bash
 # Rotate logs (production)
 docker run -d \
@@ -425,6 +448,7 @@ docker run -d \
 ```
 
 ### Health Monitoring
+
 ```bash
 # Docker healthcheck logs
 docker inspect ecommerce-api --format='{{json .State.Health}}'

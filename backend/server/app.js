@@ -96,12 +96,19 @@ const corsOptions = {
       return callback(null, true);
     }
 
-    // Allow other origins if needed (add your production domains here)
-    const allowedOrigins = [
-      // Add your production domains here
-      // 'https://yourdomain.com',
-      // 'https://www.yourdomain.com'
-    ];
+    // Allow IP addresses with ports (for direct IP access)
+    if (/^https?:\/\/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(:\d+)?$/.test(origin)) {
+      return callback(null, true);
+    }
+
+    // Allow production origins from environment variable
+    const allowedOrigins = process.env.ALLOWED_ORIGINS
+      ? process.env.ALLOWED_ORIGINS.split(",").map((origin) => origin.trim())
+      : [
+          // Add your production domains/IPs here if not using env variable
+          // 'https://yourdomain.com',
+          // 'http://192.168.1.100:3000',  // Example local IP
+        ];
 
     if (allowedOrigins.includes(origin)) {
       return callback(null, true);

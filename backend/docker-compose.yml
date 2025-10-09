@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   # E-commerce Backend API
@@ -55,7 +55,7 @@ services:
       - "443:443"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./ssl:/etc/nginx/ssl:ro  # SSL certificates (if using HTTPS)
+      - ./ssl:/etc/nginx/ssl:ro # SSL certificates (if using HTTPS)
     depends_on:
       - ecommerce-backend
     restart: unless-stopped
