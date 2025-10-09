@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  ecommerce-backend:
+    environment:
+      - NODE_ENV=development
+      # This allows all origins in development
+      # Remove in production and use specific ALLOWED_ORIGINS
+    ports:
+      - "5000:5000"
+    volumes:
+      # Mount uploads for persistence (optional)
+      - ./server/uploads:/app/server/uploads

@@ -119,6 +119,12 @@ const corsOptions = {
       return callback(null, true);
     }
 
+    // For testing/demo purposes, allow all origins in production too
+    // WARNING: Remove this in real production for security
+    if (process.env.ALLOW_ALL_ORIGINS === "true") {
+      return callback(null, true);
+    }
+
     callback(new Error("Not allowed by CORS"));
   },
   credentials: true, // Allow cookies and authentication headers
