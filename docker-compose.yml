@@ -1,5 +1,15 @@
 version: "3.8"
 
+# ==============================================
+# Full-Stack E-commerce Docker Compose
+# ==============================================
+# This file orchestrates:
+# - MongoDB Database
+# - Node.js Backend API
+# - Angular Frontend with SSR
+# - Nginx Reverse Proxy
+# ==============================================
+
 services:
   # MongoDB Database
   mongodb:
@@ -13,7 +23,7 @@ services:
       - MONGO_INITDB_DATABASE=${MONGO_DATABASE:-egyptfishar}
     volumes:
       - mongodb_data:/data/db
-      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./backend/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     restart: unless-stopped
     networks:
       - ecommerce-network
@@ -24,10 +34,10 @@ services:
       retries: 5
       start_period: 20s
 
-  # E-commerce Backend API
+  # Backend API
   ecommerce-backend:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
     container_name: ecommerce-api
     ports:
@@ -62,10 +72,10 @@ services:
       retries: 3
       start_period: 40s
 
-  # Angular Frontend with SSR
+  # Frontend with SSR
   ecommerce-frontend:
     build:
-      context: ../frontend
+      context: ./frontend
       dockerfile: Dockerfile
     container_name: ecommerce-frontend
     ports:
@@ -102,7 +112,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx-fullstack.conf:/etc/nginx/nginx.conf:ro
+      - ./backend/nginx-fullstack.conf:/etc/nginx/nginx.conf:ro
       - ./ssl:/etc/nginx/ssl:ro
     depends_on:
       - ecommerce-backend
