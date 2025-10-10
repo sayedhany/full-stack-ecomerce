@@ -26,7 +26,7 @@ export class AuthService {
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
 
-  private apiUrl = environment.apiUrl;
+  private apiUrl = environment.apiUrl + '/api';
 
   currentUser = signal<User | null>(null);
 
