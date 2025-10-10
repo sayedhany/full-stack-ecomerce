@@ -1,9 +1,18 @@
 <div class="dashboard">
+  <!-- Sidebar Overlay (Mobile) -->
+  @if (isSidebarOpen()) {
+    <div class="sidebar-overlay" (click)="closeSidebar()"></div>
+  }
+
   <!-- Sidebar -->
-  <aside class="sidebar">
+  <aside class="sidebar" [class.open]="isSidebarOpen()">
     <div class="sidebar-header">
       <h2>{{ 'ADMIN.DASHBOARD' | translate }}</h2>
       <p>{{ authService.currentUser()?.name }}</p>
+      <!-- Close button for mobile -->
+      <button class="sidebar-close" (click)="closeSidebar()" aria-label="Close Menu">
+        ✕
+      </button>
     </div>
 
     <nav class="sidebar-nav">
@@ -12,6 +21,7 @@
           [routerLink]="[ item.path]"
           routerLinkActive="active"
           class="nav-item"
+          (click)="closeSidebar()"
         >
           <span class="icon">{{ item.icon }}</span>
           <span>{{ item.label | translate }}</span>
@@ -27,7 +37,7 @@
 
   <!-- Main Content -->
   <main class="dashboard-content">
-    <app-header/>
+    <app-header [showMenuToggle]="true" (menuToggle)="toggleSidebar()"/>
     <section>
       <router-outlet></router-outlet>
     </section>

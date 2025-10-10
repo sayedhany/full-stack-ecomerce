@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -19,6 +19,12 @@ export class HeaderComponent {
   languageService = inject(LanguageService);
   themeService = inject(ThemeService);
 
+  // Input for showing mobile menu toggle (admin dashboard)
+  showMenuToggle = input<boolean>(false);
+
+  // Output event for menu toggle
+  menuToggle = output<void>();
+
   get currentLang(): SupportedLanguage {
     return this.languageService.getCurrentLanguage();
   }
@@ -29,5 +35,9 @@ export class HeaderComponent {
 
   toggleTheme(): void {
     this.themeService.toggleTheme();
+  }
+
+  onMenuToggle(): void {
+    this.menuToggle.emit();
   }
 }

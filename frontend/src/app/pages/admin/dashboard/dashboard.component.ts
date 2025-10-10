@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -16,17 +21,28 @@ import { HeaderComponent } from '../../../components/header/header.component';
 })
 export class DashboardComponent {
   authService = inject(AuthService);
-
   translationService = inject(LanguageService);
+
+  // Sidebar state for mobile
+  isSidebarOpen = signal(false);
 
   get currentLang(): string {
     return this.translationService.getCurrentLanguage();
   }
+
   menuItems = [
     { path: 'products', label: 'ADMIN.PRODUCTS_MANAGEMENT', icon: '📦' },
     { path: 'categories', label: 'ADMIN.CATEGORIES_MANAGEMENT', icon: '🏷️' },
     { path: 'users', label: 'ADMIN.USERS_MANAGEMENT', icon: '👥' },
   ];
+
+  toggleSidebar(): void {
+    this.isSidebarOpen.set(!this.isSidebarOpen());
+  }
+
+  closeSidebar(): void {
+    this.isSidebarOpen.set(false);
+  }
 
   logout(): void {
     this.authService.logout();

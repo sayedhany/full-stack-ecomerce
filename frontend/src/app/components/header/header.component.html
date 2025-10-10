@@ -1,6 +1,13 @@
 <header class="header">
   <div class="container">
     <div class="header-content">
+      <!-- Mobile Menu Toggle Button (for admin dashboard) -->
+      @if (showMenuToggle()) {
+        <button class="mobile-menu-toggle" (click)="onMenuToggle()" aria-label="Toggle Menu">
+          <span class="hamburger-icon">☰</span>
+        </button>
+      }
+
       <!-- Logo -->
       <a [routerLink]="['/', currentLang]" class="logo">
         <h1>{{ 'COMPANY_NAME' | translate }}</h1>
