@@ -18,6 +18,7 @@ import { register } from 'swiper/element/bundle';
 import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
 import { authInterceptor } from './interceptors/auth.interceptor';
+import { loadingInterceptor } from './interceptors/loading.interceptor';
 
 // Register Swiper custom elements
 register();
@@ -41,7 +42,10 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideClientHydration(),
-    provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([authInterceptor, loadingInterceptor])
+    ),
     importProvidersFrom(
       TranslateModule.forRoot({
         loader: {
