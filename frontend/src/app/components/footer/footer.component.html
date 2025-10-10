@@ -1,14 +1,156 @@
 <footer class="footer">
   <div class="container">
     <div class="footer-content">
-      <div class="footer-section">
-        <h3>{{ 'COMPANY_NAME' | translate }}</h3>
-        <p>{{ 'COMPANY_DESCRIPTION' | translate }}</p>
+      <!-- Company Info Section -->
+      <div class="footer-section about">
+        <div class="footer-logo">
+          <a [routerLink]="['/', currentLang]">
+            <h2>{{ 'COMPANY_NAME' | translate }}</h2>
+          </a>
+        </div>
+        <p class="company-desc">{{ 'COMPANY_DESCRIPTION' | translate }}</p>
+        <p class="tagline">{{ 'FOOTER_TAGLINE' | translate }}</p>
+      </div>
+
+      <!-- Quick Links Section -->
+      <div class="footer-section links">
+        <h3>{{ 'QUICK_LINKS' | translate }}</h3>
+        <ul>
+          <li>
+            <a [routerLink]="['/', currentLang]">
+              <span class="link-icon">🏠</span>
+              {{ 'HOME' | translate }}
+            </a>
+          </li>
+          <li>
+            <a [routerLink]="['/', currentLang, 'products']">
+              <span class="link-icon">🛍️</span>
+              {{ 'PRODUCTS' | translate }}
+            </a>
+          </li>
+          <li>
+            <a [routerLink]="['/', currentLang, 'about']">
+              <span class="link-icon">ℹ️</span>
+              {{ 'ABOUT_US' | translate }}
+            </a>
+          </li>
+          <li>
+            <a [routerLink]="['/', currentLang, 'contact']">
+              <span class="link-icon">📧</span>
+              {{ 'CONTACT_US' | translate }}
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Customer Service Section -->
+      <div class="footer-section links">
+        <h3>{{ 'CUSTOMER_SERVICE' | translate }}</h3>
+        <ul>
+          <li>
+            <a href="#" (click)="$event.preventDefault()">
+              <span class="link-icon">❓</span>
+              {{ 'FAQ' | translate }}
+            </a>
+          </li>
+          <li>
+            <a href="#" (click)="$event.preventDefault()">
+              <span class="link-icon">🚚</span>
+              {{ 'SHIPPING_INFO' | translate }}
+            </a>
+          </li>
+          <li>
+            <a href="#" (click)="$event.preventDefault()">
+              <span class="link-icon">↩️</span>
+              {{ 'RETURNS' | translate }}
+            </a>
+          </li>
+          <li>
+            <a href="#" (click)="$event.preventDefault()">
+              <span class="link-icon">🔒</span>
+              {{ 'PRIVACY_POLICY' | translate }}
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Contact Info Section -->
+      <div class="footer-section contact">
+        <h3>{{ 'CONTACT_INFO' | translate }}</h3>
+        <ul class="contact-list">
+          <li>
+            <span class="contact-icon">📍</span>
+            <div class="contact-details">
+              <strong>{{ 'LOCATION' | translate }}</strong>
+              <p>{{ 'FOOTER_ADDRESS' | translate }}</p>
+            </div>
+          </li>
+          <li>
+            <span class="contact-icon">📞</span>
+            <div class="contact-details">
+              <strong>{{ 'PHONE' | translate }}</strong>
+              <p>
+                <a href="tel:+201277782993">+20 127 778 2993</a>
+              </p>
+              <p>
+                <a href="tel:+201234567890">+20 123 456 7890</a>
+              </p>
+            </div>
+          </li>
+          <li>
+            <span class="contact-icon">✉️</span>
+            <div class="contact-details">
+              <strong>{{ 'EMAIL' | translate }}</strong>
+              <p>
+                <a href="mailto:info@egyptfisher.com">{{ 'info@egyptfisher.com'  }}</a>
+              </p>
+              <p>
+                <a href="mailto:support@egyptfisher.com">{{ 'support@egyptfisher.com'  }}</a>
+              </p>
+            </div>
+          </li>
+          <li>
+            <span class="contact-icon">💬</span>
+            <div class="contact-details">
+              <strong>{{ 'WHATSAPP' | translate }}</strong>
+              <p>
+                <a href="https://wa.me/201277782993" target="_blank" rel="noopener noreferrer">
+                  +20 127 778 2993
+                </a>
+              </p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Social Media & Bottom Bar -->
+    <div class="footer-middle">
+      <div class="social-media">
+        <h3>{{ 'FOLLOW_US' | translate }}</h3>
+        <div class="social-links">
+          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+            <span class="social-icon">📘</span>
+          </a>
+          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+            <span class="social-icon">🐦</span>
+          </a>
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <span class="social-icon">📷</span>
+          </a>
+          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+            <span class="social-icon">💼</span>
+          </a>
+          <a href="https://wa.me/201277782993" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+            <span class="social-icon">💬</span>
+          </a>
+        </div>
       </div>
     </div>
     
     <div class="footer-bottom">
       <p>&copy; {{ currentYear }} {{ 'COMPANY_NAME' | translate }}. {{ 'ALL_RIGHTS_RESERVED' | translate }}</p>
+      <p class="developer-credit">{{ 'DEVELOPED_BY' | translate }} <span class="highlight">EgyptFisher Team</span></p>
     </div>
   </div>
 </footer>

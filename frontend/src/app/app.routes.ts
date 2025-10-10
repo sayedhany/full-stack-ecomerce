@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
+import { loginGuard } from './guards/login.guard';
 import { PublicLayoutComponent } from './layouts/public-layout/public-layout.component';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 
@@ -53,6 +54,7 @@ export const routes: Routes = [
           import('./pages/admin/login/login.component').then(
             (m) => m.LoginComponent
           ),
+        canActivate: [loginGuard], // Prevent logged-in users from accessing login
       },
       {
         path: 'dashboard',
@@ -140,6 +142,7 @@ export const routes: Routes = [
           import('./pages/admin/login/login.component').then(
             (m) => m.LoginComponent
           ),
+        canActivate: [loginGuard], // Prevent logged-in users from accessing login
       },
       {
         path: 'dashboard',

@@ -63,5 +63,124 @@
       }
     </div>
   </section>
-</main>
 
+  <!-- Why Choose Us Section -->
+  <section class="why-choose-us-section" aria-label="Why Choose Us">
+    <div class="container">
+      <div class="section-header-center">
+        <h2>{{ 'WHY_CHOOSE_US' | translate }}</h2>
+        <p class="section-subtitle">{{ 'ABOUT_SUBTITLE' | translate }}</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">✓</div>
+          <h3>{{ 'QUALITY_PRODUCTS' | translate }}</h3>
+          <p>{{ 'QUALITY_PRODUCTS_TEXT' | translate }}</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🚚</div>
+          <h3>{{ 'FAST_DELIVERY' | translate }}</h3>
+          <p>{{ 'FAST_DELIVERY_TEXT' | translate }}</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">💬</div>
+          <h3>{{ 'CUSTOMER_SUPPORT' | translate }}</h3>
+          <p>{{ 'CUSTOMER_SUPPORT_TEXT' | translate }}</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🔒</div>
+          <h3>{{ 'SECURE_PAYMENT' | translate }}</h3>
+          <p>{{ 'SECURE_PAYMENT_TEXT' | translate }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories Section -->
+  <section class="categories-section" aria-label="Product Categories">
+    <div class="container">
+      <div class="section-header-center">
+        <h2>{{ 'SHOP_BY_CATEGORY' | translate }}</h2>
+        <p class="section-subtitle">{{ 'EXPLORE_CATEGORIES' | translate }}</p>
+      </div>
+
+      <div class="categories-grid">
+        <div class="category-card">
+          <div class="category-icon">💻</div>
+          <h3>{{ 'ELECTRONICS' | translate }}</h3>
+          <p>{{ 'ELECTRONICS_DESC' | translate }}</p>
+          <a [routerLink]="['/', currentLang, 'products']" class="category-link">
+            {{ 'EXPLORE' | translate }} →
+          </a>
+        </div>
+
+        <div class="category-card">
+          <div class="category-icon">📱</div>
+          <h3>{{ 'ACCESSORIES' | translate }}</h3>
+          <p>{{ 'ACCESSORIES_DESC' | translate }}</p>
+          <a [routerLink]="['/', currentLang, 'products']" class="category-link">
+            {{ 'EXPLORE' | translate }} →
+          </a>
+        </div>
+
+        <div class="category-card">
+          <div class="category-icon">🎧</div>
+          <h3>{{ 'AUDIO' | translate }}</h3>
+          <p>{{ 'AUDIO_DESC' | translate }}</p>
+          <a [routerLink]="['/', currentLang, 'products']" class="category-link">
+            {{ 'EXPLORE' | translate }} →
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats-section" aria-label="Company Statistics">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-number">1000+</div>
+          <div class="stat-label">{{ 'HAPPY_CUSTOMERS' | translate }}</div>
+        </div>
+
+        <div class="stat-item">
+          <div class="stat-number">500+</div>
+          <div class="stat-label">{{ 'PRODUCTS' | translate }}</div>
+        </div>
+
+        <div class="stat-item">
+          <div class="stat-number">50+</div>
+          <div class="stat-label">{{ 'BRANDS' | translate }}</div>
+        </div>
+
+        <div class="stat-item">
+          <div class="stat-number">24/7</div>
+          <div class="stat-label">{{ 'SUPPORT' | translate }}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section" aria-label="Call to Action">
+    <div class="container">
+      <div class="cta-content">
+        <h2>{{ 'READY_TO_SHOP' | translate }}</h2>
+        <p>{{ 'CTA_DESCRIPTION' | translate }}</p>
+        <div class="cta-buttons">
+          <a [routerLink]="['/', currentLang, 'products']" class="btn btn-primary">
+            {{ 'BROWSE_PRODUCTS' | translate }}
+          </a>
+          <a [routerLink]="['/', currentLang, 'contact']" class="btn btn-secondary">
+            {{ 'CONTACT_US' | translate }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

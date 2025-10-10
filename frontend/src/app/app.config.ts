@@ -7,6 +7,7 @@ import {
   provideRouter,
   withPreloading,
   PreloadAllModules,
+  withInMemoryScrolling,
 } from '@angular/router';
 import {
   provideHttpClient,
@@ -44,7 +45,14 @@ export function HttpLoaderFactory(http: HttpClient) {
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes, withPreloading(PreloadAllModules)),
+    provideRouter(
+      routes,
+      withPreloading(PreloadAllModules),
+      withInMemoryScrolling({
+        scrollPositionRestoration: 'top',
+        anchorScrolling: 'enabled',
+      })
+    ),
     provideClientHydration(),
     provideHttpClient(
       withFetch(),

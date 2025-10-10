@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="180" height="180">
+  <!-- Background circle -->
+  <circle cx="90" cy="90" r="85" fill="#2563eb"/>
+  
+  <!-- Screw 1 (left) -->
+  <g transform="translate(56, 56)">
+    <!-- Screw head -->
+    <circle cx="0" cy="0" r="18" fill="#ffffff"/>
+    <line x1="-12" y1="0" x2="12" y2="0" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+    <line x1="0" y1="-12" x2="0" y2="12" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+    <!-- Screw body -->
+    <rect x="-6" y="18" width="12" height="48" fill="#e5e7eb" rx="3"/>
+    <line x1="-3" y1="24" x2="-3" y2="60" stroke="#9ca3af" stroke-width="1.5"/>
+    <line x1="3" y1="24" x2="3" y2="60" stroke="#9ca3af" stroke-width="1.5"/>
+  </g>
+  
+  <!-- Screw 2 (right) -->
+  <g transform="translate(124, 56)">
+    <!-- Screw head -->
+    <circle cx="0" cy="0" r="18" fill="#ffffff"/>
+    <line x1="-12" y1="-12" x2="12" y2="12" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+    <line x1="-12" y1="12" x2="12" y2="-12" stroke="#2563eb" stroke-width="4" stroke-linecap="round"/>
+    <!-- Screw body -->
+    <rect x="-6" y="18" width="12" height="48" fill="#e5e7eb" rx="3"/>
+    <line x1="-3" y1="24" x2="-3" y2="60" stroke="#9ca3af" stroke-width="1.5"/>
+    <line x1="3" y1="24" x2="3" y2="60" stroke="#9ca3af" stroke-width="1.5"/>
+  </g>
+  
+  <!-- Wrench icon at bottom -->
+  <g transform="translate(90, 135)">
+    <path d="M-24,-6 L-18,-12 L-6,-12 L0,-6 L6,-12 L18,-12 L24,-6 L18,0 L6,0 L0,-6 L-6,0 L-18,0 Z" 
+          fill="#ffffff" stroke="#1e40af" stroke-width="2"/>
+  </g>
+</svg>
