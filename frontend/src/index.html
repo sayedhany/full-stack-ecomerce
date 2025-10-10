@@ -31,6 +31,24 @@
   
   <!-- Canonical URL (will be updated dynamically) -->
   <link rel="canonical" href="/">
+  
+  <!-- Preload critical resources -->
+  <link rel="preload" as="script" href="polyfills.js" crossorigin="anonymous">
+  <link rel="preload" as="script" href="main.js" crossorigin="anonymous">
+  <link rel="preload" as="style" href="styles.css">
+  
+  <!-- Preconnect to external domains -->
+  <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- DNS Prefetch for faster lookups -->
+  <link rel="dns-prefetch" href="https://images.unsplash.com">
+  <link rel="dns-prefetch" href="https://api.wa.me">
+  
+  <!-- Preload key modules -->
+  <link rel="modulepreload" href="chunk-vendors.js">
+  <link rel="modulepreload" href="chunk-common.js">
 </head>
 <body>
   <app-root></app-root>

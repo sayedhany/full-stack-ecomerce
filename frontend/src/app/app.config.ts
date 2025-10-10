@@ -3,7 +3,11 @@ import {
   provideZoneChangeDetection,
   CUSTOM_ELEMENTS_SCHEMA,
 } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import {
+  provideRouter,
+  withPreloading,
+  PreloadAllModules,
+} from '@angular/router';
 import {
   provideHttpClient,
   withFetch,
@@ -40,7 +44,7 @@ export function HttpLoaderFactory(http: HttpClient) {
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes),
+    provideRouter(routes, withPreloading(PreloadAllModules)),
     provideClientHydration(),
     provideHttpClient(
       withFetch(),
