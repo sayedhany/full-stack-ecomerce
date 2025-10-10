@@ -1,0 +1,46 @@
+<!-- Fixed Call Button -->
+<div class="call-button-container">
+  <!-- Phone Menu -->
+  @if (isMenuOpen()) {
+    <div class="phone-menu" (click)="$event.stopPropagation()">
+      <div class="menu-header">
+        <h3>{{ 'CALL_US' | translate }}</h3>
+        <button class="close-btn" (click)="closeMenu()" aria-label="Close">
+          ✕
+        </button>
+      </div>
+      <div class="menu-items">
+        @for (phone of phoneNumbers; track phone.tel) {
+          <a 
+            [href]="'tel:' + phone.tel" 
+            class="phone-item"
+            (click)="closeMenu()">
+            <span class="phone-icon">📞</span>
+            <div class="phone-details">
+              <span class="phone-label">{{ phone.label | translate }}</span>
+              <span class="phone-number">{{ phone.number }}</span>
+            </div>
+          </a>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Main Call Button -->
+  <button 
+    class="call-btn" 
+    (click)="toggleMenu()"
+    [class.active]="isMenuOpen()"
+    [attr.aria-label]="'CALL_US' | translate">
+    @if (isMenuOpen()) {
+      <span class="btn-icon close-icon">✕</span>
+    } @else {
+      <span class="btn-icon">📞</span>
+    }
+  </button>
+
+  <!-- Backdrop -->
+  @if (isMenuOpen()) {
+    <div class="backdrop" (click)="closeMenu()"></div>
+  }
+</div>

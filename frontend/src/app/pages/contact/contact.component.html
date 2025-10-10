@@ -7,36 +7,48 @@
         <h2>{{ 'CONTACT_INFO' | translate }}</h2>
         
         <div class="contact-items">
+          <!-- Email Section -->
           <div class="contact-item">
             <div class="icon">📧</div>
             <div class="details">
               <h3>{{ 'EMAIL' | translate }}</h3>
-              <a [href]="'mailto:' + contactInfo.email">{{ contactInfo.email }}</a>
+              <a [href]="'mailto:' + contactInfo.emails.main">{{ contactInfo.emails.main }}</a>
+              <a [href]="'mailto:' + contactInfo.emails.support">{{ contactInfo.emails.support }}</a>
             </div>
           </div>
 
+          <!-- Phone Section -->
           <div class="contact-item">
             <div class="icon">📱</div>
             <div class="details">
               <h3>{{ 'PHONE' | translate }}</h3>
-              <a [href]="'tel:' + contactInfo.phone">{{ contactInfo.phone }}</a>
+              <a [href]="'tel:' + contactInfo.phones.main.tel">{{ contactInfo.phones.main.number }}</a>
+              <a [href]="'tel:' + contactInfo.phones.support.tel">{{ contactInfo.phones.support.number }}</a>
             </div>
           </div>
 
+          <!-- WhatsApp Section -->
           <div class="contact-item">
-            <div class="icon">📍</div>
+            <div class="icon">💬</div>
+            <div class="details">
+              <h3>{{ 'WHATSAPP' | translate }}</h3>
+              <a [href]="'https://wa.me/' + contactInfo.phones.whatsapp.tel" target="_blank" rel="noopener noreferrer">
+                {{ contactInfo.phones.whatsapp.number }}
+              </a>
+            </div>
+          </div>
+
+          <!-- Location Section -->
+          <div class="contact-item">
+            <div class="icon"> 📍</div>
             <div class="details">
               <h3>{{ 'LOCATION' | translate }}</h3>
-              <p>{{ contactInfo.location }}</p>
+              <p>{{ contactInfo.address.full }}</p>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="company-info">
-        <h2>{{ 'COMPANY_NAME' | translate }}</h2>
-        <p>{{ 'COMPANY_DESCRIPTION' | translate }}</p>
-      </div>
     </div>
   </div>
 </div>

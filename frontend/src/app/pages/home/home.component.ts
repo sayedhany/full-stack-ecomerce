@@ -19,6 +19,7 @@ import {
 import { Product } from '../../models/product.model';
 import { register } from 'swiper/element/bundle';
 import { ProductCardComponent } from '../../components/product-card/product-card.component';
+import { CallButtonComponent } from '../../components/call-button/call-button.component';
 
 // Register Swiper custom elements
 register();
@@ -26,7 +27,13 @@ register();
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslateModule, ProductCardComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    TranslateModule,
+    ProductCardComponent,
+    CallButtonComponent,
+  ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

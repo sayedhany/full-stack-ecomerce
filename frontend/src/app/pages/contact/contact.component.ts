@@ -12,6 +12,7 @@ import {
   LanguageService,
   SupportedLanguage,
 } from '../../services/translation.service';
+import { CONTACT_INFO } from '../../config/contact.config';
 
 @Component({
   selector: 'app-contact',
@@ -28,11 +29,7 @@ export class ContactComponent implements OnInit {
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
 
-  contactInfo = {
-    email: 'info@egyptfisher.com',
-    phone: '+20 123 456 7890',
-    location: 'Cairo, Egypt',
-  };
+  contactInfo = CONTACT_INFO;
 
   get currentLang(): SupportedLanguage {
     return this.languageService.getCurrentLanguage();

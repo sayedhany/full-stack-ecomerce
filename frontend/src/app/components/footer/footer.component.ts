@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageService } from '../../services/translation.service';
+import { CONTACT_INFO } from '../../config/contact.config';
 
 @Component({
   selector: 'app-footer',
@@ -15,6 +16,7 @@ export class FooterComponent {
   private languageService = inject(LanguageService);
 
   currentYear = new Date().getFullYear();
+  contactInfo = CONTACT_INFO;
 
   get currentLang(): string {
     return this.languageService.getCurrentLanguage();

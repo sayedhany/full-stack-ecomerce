@@ -6,6 +6,7 @@ import {
   LanguageService,
   SupportedLanguage,
 } from '../../services/translation.service';
+import { CONTACT_INFO } from '../../config/contact.config';
 
 @Component({
   selector: 'app-about',
@@ -20,6 +21,7 @@ export class AboutComponent implements OnInit {
   private platformId = inject(PLATFORM_ID);
 
   private isBrowser = isPlatformBrowser(this.platformId);
+  contactInfo = CONTACT_INFO;
 
   get currentLang(): SupportedLanguage {
     return this.languageService.getCurrentLanguage();
@@ -34,16 +36,18 @@ export class AboutComponent implements OnInit {
     const lang = this.currentLang;
 
     const title =
-      lang === 'ar' ? 'من نحن - EgyptFisher' : 'About Us - EgyptFisher';
+      lang === 'ar'
+        ? `من نحن - ${CONTACT_INFO.companyName}`
+        : `About Us - ${CONTACT_INFO.companyName}`;
     const description =
       lang === 'ar'
-        ? 'تعرف على EgyptFisher - شريكك الموثوق للمنتجات عالية الجودة'
-        : 'Learn about EgyptFisher - Your trusted partner for quality products';
+        ? `تعرف على ${CONTACT_INFO.companyName} - شريكك الموثوق للمنتجات عالية الجودة`
+        : `Learn about ${CONTACT_INFO.companyName} - Your trusted partner for quality products`;
 
     this.seoService.updateMetaTags({
       title,
       description,
-      keywords: 'about us, company, EgyptFisher, quality products',
+      keywords: `about us, company, ${CONTACT_INFO.companyName}, quality products`,
       url: currentUrl,
       type: 'website',
       lang: lang,

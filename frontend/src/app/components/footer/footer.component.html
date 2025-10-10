@@ -82,7 +82,7 @@
             <span class="contact-icon">📍</span>
             <div class="contact-details">
               <strong>{{ 'LOCATION' | translate }}</strong>
-              <p>{{ 'FOOTER_ADDRESS' | translate }}</p>
+              <p>{{ contactInfo.address.full }}</p>
             </div>
           </li>
           <li>
@@ -90,10 +90,10 @@
             <div class="contact-details">
               <strong>{{ 'PHONE' | translate }}</strong>
               <p>
-                <a href="tel:+201277782993">+20 127 778 2993</a>
+                <a [href]="'tel:' + contactInfo.phones.main.tel">{{ contactInfo.phones.main.number }}</a>
               </p>
               <p>
-                <a href="tel:+201234567890">+20 123 456 7890</a>
+                <a [href]="'tel:' + contactInfo.phones.support.tel">{{ contactInfo.phones.support.number }}</a>
               </p>
             </div>
           </li>
@@ -102,10 +102,10 @@
             <div class="contact-details">
               <strong>{{ 'EMAIL' | translate }}</strong>
               <p>
-                <a href="mailto:info@egyptfisher.com">{{ 'info@egyptfisher.com'  }}</a>
+                <a [href]="'mailto:' + contactInfo.emails.main">{{ contactInfo.emails.main }}</a>
               </p>
               <p>
-                <a href="mailto:support@egyptfisher.com">{{ 'support@egyptfisher.com'  }}</a>
+                <a [href]="'mailto:' + contactInfo.emails.support">{{ contactInfo.emails.support }}</a>
               </p>
             </div>
           </li>
@@ -114,8 +114,8 @@
             <div class="contact-details">
               <strong>{{ 'WHATSAPP' | translate }}</strong>
               <p>
-                <a href="https://wa.me/201277782993" target="_blank" rel="noopener noreferrer">
-                  +20 127 778 2993
+                <a [href]="'https://wa.me/' + contactInfo.phones.whatsapp.tel" target="_blank" rel="noopener noreferrer">
+                  {{ contactInfo.phones.whatsapp.number }}
                 </a>
               </p>
             </div>
@@ -129,28 +129,38 @@
       <div class="social-media">
         <h3>{{ 'FOLLOW_US' | translate }}</h3>
         <div class="social-links">
-          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-            <span class="social-icon">📘</span>
-          </a>
-          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-            <span class="social-icon">🐦</span>
-          </a>
-          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-            <span class="social-icon">📷</span>
-          </a>
-          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-            <span class="social-icon">💼</span>
-          </a>
-          <a href="https://wa.me/201277782993" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
-            <span class="social-icon">💬</span>
-          </a>
+          @if (contactInfo.social.facebook) {
+            <a [href]="contactInfo.social.facebook" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <span class="social-icon">📘</span>
+            </a>
+          }
+          @if (contactInfo.social.twitter) {
+            <a [href]="contactInfo.social.twitter" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+              <span class="social-icon">🐦</span>
+            </a>
+          }
+          @if (contactInfo.social.instagram) {
+            <a [href]="contactInfo.social.instagram" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <span class="social-icon">📷</span>
+            </a>
+          }
+          @if (contactInfo.social.linkedin) {
+            <a [href]="contactInfo.social.linkedin" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <span class="social-icon">💼</span>
+            </a>
+          }
+          @if (contactInfo.social.youtube) {
+            <a [href]="contactInfo.social.youtube" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+              <span class="social-icon">�</span>
+            </a>
+          }
         </div>
       </div>
     </div>
     
     <div class="footer-bottom">
-      <p>&copy; {{ currentYear }} {{ 'COMPANY_NAME' | translate }}. {{ 'ALL_RIGHTS_RESERVED' | translate }}</p>
-      <p class="developer-credit">{{ 'DEVELOPED_BY' | translate }} <span class="highlight">EgyptFisher Team</span></p>
+      <p>&copy; {{ currentYear }} {{ contactInfo.companyName }}. {{ 'ALL_RIGHTS_RESERVED' | translate }}</p>
+      <p class="developer-credit">{{ 'DEVELOPED_BY' | translate }} <span class="highlight">{{ contactInfo.companyName }} Team</span></p>
     </div>
   </div>
 </footer>

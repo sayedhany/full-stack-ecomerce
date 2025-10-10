@@ -1,0 +1,431 @@
+.call-button-container {
+  position: fixed;
+  bottom: 2rem;
+  inset-inline-end: 2rem;
+  z-index: 1000;
+  animation: slideInUp 0.6s ease-out;
+
+  /* RTL Support */
+  [dir="rtl"] & {
+    inset-inline-end: 2rem;
+    inset-inline-start: auto;
+  }
+}
+
+/* Main Call Button */
+.call-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-color) 0%, #1e40af 100%);
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1002;
+  animation: pulse 2s ease-in-out infinite;
+
+  .btn-icon {
+    font-size: 1.75rem;
+    transition: all 0.3s ease;
+    animation: iconBounce 1s ease-in-out infinite;
+
+    &.close-icon {
+      font-size: 2rem;
+      animation: rotateIn 0.3s ease-out;
+    }
+  }
+
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 28px rgba(37, 99, 235, 0.5);
+    animation: none; /* Stop pulse on hover */
+
+    .btn-icon {
+      animation: shake 0.5s ease-in-out;
+    }
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &.active {
+    background: #ef4444;
+    animation: none;
+  }
+}
+
+/* Phone Menu */
+.phone-menu {
+  position: absolute;
+  bottom: 75px;
+  inset-inline-end: 0;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  width: 280px;
+  overflow: hidden;
+  animation: slideUp 0.3s ease;
+  z-index: 1003;
+
+  [dir="rtl"] & {
+    inset-inline-end: 0;
+    inset-inline-start: auto;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background: var(--primary-color);
+  color: white;
+
+  h3 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+
+  .close-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  }
+}
+
+.menu-items {
+  padding: 0.5rem 0;
+}
+
+.phone-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+  border-bottom: 1px solid var(--border-color);
+  animation: slideInRight 0.3s ease-out backwards;
+
+  &:nth-child(1) {
+    animation-delay: 0.1s;
+  }
+
+  &:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  &:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .phone-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+
+  .phone-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+
+    .phone-label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      transition: color 0.2s ease;
+    }
+
+    .phone-number {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      direction: ltr;
+      text-align: start;
+      transition: color 0.2s ease;
+    }
+  }
+
+  &:hover {
+    background: var(--hover-bg, rgba(37, 99, 235, 0.05));
+    transform: translateX(-3px);
+
+    [dir="rtl"] & {
+      transform: translateX(3px);
+    }
+
+    .phone-icon {
+      transform: scale(1.2) rotate(10deg);
+    }
+
+    .phone-details {
+      .phone-label {
+        color: var(--primary-color);
+      }
+    }
+  }
+
+  &:active {
+    transform: scale(0.98);
+    background: var(--primary-color);
+    color: white;
+
+    .phone-details .phone-label,
+    .phone-details .phone-number {
+      color: white;
+    }
+  }
+}
+
+/* Backdrop */
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 1001;
+  animation: fadeIn 0.3s ease;
+  backdrop-filter: blur(2px);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .call-button-container {
+    bottom: 1.5rem;
+    inset-inline-end: 1.5rem;
+  }
+
+  .call-btn {
+    width: 56px;
+    height: 56px;
+
+    .btn-icon {
+      font-size: 1.6rem;
+
+      &.close-icon {
+        font-size: 1.85rem;
+      }
+    }
+  }
+
+  .phone-menu {
+    width: 260px;
+    bottom: 70px;
+  }
+}
+
+@media (max-width: 480px) {
+  .call-button-container {
+    bottom: 1rem;
+    inset-inline-end: 1rem;
+  }
+
+  .call-btn {
+    width: 52px;
+    height: 52px;
+
+    .btn-icon {
+      font-size: 1.5rem;
+
+      &.close-icon {
+        font-size: 1.75rem;
+      }
+    }
+  }
+
+  .phone-menu {
+    width: calc(100vw - 2rem);
+    max-width: 280px;
+    bottom: 65px;
+    inset-inline-end: 0;
+  }
+
+  .menu-header {
+    padding: 0.875rem 1rem;
+
+    h3 {
+      font-size: 1rem;
+    }
+  }
+
+  .phone-item {
+    padding: 0.875rem 1rem;
+
+    .phone-icon {
+      font-size: 1.35rem;
+    }
+
+    .phone-details {
+      .phone-label {
+        font-size: 0.8rem;
+      }
+
+      .phone-number {
+        font-size: 0.875rem;
+      }
+    }
+  }
+}
+
+/* Keyframe Animations */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4);
+  }
+  50% {
+    box-shadow: 0 4px 30px rgba(37, 99, 235, 0.7),
+      0 0 0 10px rgba(37, 99, 235, 0.1);
+  }
+}
+
+@keyframes iconBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0) rotate(0deg);
+  }
+  25% {
+    transform: translateX(-5px) rotate(-10deg);
+  }
+  75% {
+    transform: translateX(5px) rotate(10deg);
+  }
+}
+
+@keyframes rotateIn {
+  from {
+    transform: rotate(-180deg);
+    opacity: 0;
+  }
+  to {
+    transform: rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* RTL support for slideInRight */
+[dir="rtl"] {
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+}

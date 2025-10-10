@@ -3,6 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { Product } from '../../models/product.model';
+import { CONTACT_INFO } from '../../config/contact.config';
 
 @Component({
   selector: 'app-product-card',
@@ -61,8 +62,7 @@ export class ProductCardComponent {
         : `Hello, I'm interested in this product:\n\n*${productName}*\nPrice: $${productPrice}\n\nLink: ${productUrl}`;
 
     const encodedMessage = encodeURIComponent(message);
-    const whatsappNumber = '201277782993'; // Egypt country code + number
-    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+    const whatsappUrl = `https://wa.me/${CONTACT_INFO.phones.whatsapp.tel}?text=${encodedMessage}`;
 
     // Open WhatsApp in new tab
     if (this.isBrowser) {

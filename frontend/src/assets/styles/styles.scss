@@ -55,9 +55,20 @@ body {
   width: 100%;
 }
 
+.container-narrow {
+  max-width: 85%;
+  margin: 0 auto;
+  padding: 0 1rem;
+  width: 100%;
+}
+
 @media (max-width: 1024px) {
   .container {
     max-width: 960px;
+  }
+
+  .container-narrow {
+    max-width: 90%;
   }
 }
 
@@ -65,10 +76,20 @@ body {
   .container {
     padding: 0 0.75rem;
   }
+
+  .container-narrow {
+    max-width: 95%;
+    padding: 0 0.75rem;
+  }
 }
 
 @media (max-width: 480px) {
   .container {
+    padding: 0 0.5rem;
+  }
+
+  .container-narrow {
+    max-width: 100%;
     padding: 0 0.5rem;
   }
 }

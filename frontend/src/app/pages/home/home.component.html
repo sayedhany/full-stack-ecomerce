@@ -28,7 +28,7 @@
 
   <!-- Featured Products Section -->
   <section class="featured-products-section" aria-label="Featured Products">
-    <div class="container">
+    <div class="container-narrow">
       <div class="section-header">
         <h2>{{ 'FEATURED_PRODUCTS' | translate }}</h2>
         <a [routerLink]="['/', currentLang, 'products']" class="view-all-btn">
@@ -102,7 +102,7 @@
 
   <!-- Categories Section -->
   <section class="categories-section" aria-label="Product Categories">
-    <div class="container">
+    <div class="container-narrow">
       <div class="section-header-center">
         <h2>{{ 'SHOP_BY_CATEGORY' | translate }}</h2>
         <p class="section-subtitle">{{ 'EXPLORE_CATEGORIES' | translate }}</p>
@@ -141,7 +141,7 @@
 
   <!-- Stats Section -->
   <section class="stats-section" aria-label="Company Statistics">
-    <div class="container">
+    <div class="container-narrow">
       <div class="stats-grid">
         <div class="stat-item">
           <div class="stat-number">1000+</div>
@@ -183,4 +183,6 @@
       </div>
     </div>
   </section>
+
+  <app-call-button />
 </main>

@@ -70,6 +70,8 @@
     text-decoration: none;
     font-size: 1.1rem;
     transition: color 0.3s ease;
+    display: block;
+    margin-bottom: 0.25rem;
 
     &:hover {
       color: var(--secondary-color);
@@ -100,6 +102,40 @@
     font-size: 1.2rem;
     color: var(--text-secondary);
     line-height: 1.8;
+  }
+}
+
+.social-links {
+  margin-top: 2rem;
+
+  h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+  }
+
+  .social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+
+    a {
+      font-size: 2.5rem;
+      text-decoration: none;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      display: inline-block;
+      opacity: 0.8;
+
+      &:hover {
+        transform: scale(1.2) rotate(5deg);
+        opacity: 1;
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
+    }
   }
 }
 
@@ -176,6 +212,17 @@
       line-height: 1.7;
     }
   }
+
+  .social-links {
+    h3 {
+      font-size: 1.35rem;
+    }
+
+    .social-icons a {
+      font-size: 2.25rem;
+      gap: 1.25rem;
+    }
+  }
 }
 
 @media (max-width: 480px) {
@@ -244,6 +291,23 @@
     p {
       font-size: 1rem;
       line-height: 1.6;
+    }
+  }
+
+  .social-links {
+    margin-top: 1.5rem;
+
+    h3 {
+      font-size: 1.15rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .social-icons {
+      gap: 1rem;
+
+      a {
+        font-size: 2rem;
+      }
     }
   }
 }
