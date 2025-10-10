@@ -1,4 +1,11 @@
-import { Component, OnInit, inject, signal, PLATFORM_ID, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  signal,
+  PLATFORM_ID,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -13,8 +20,8 @@ import { Product } from '../../models/product.model';
 @Component({
   selector: 'app-product-details',
   standalone: true,
-  
-    changeDetection: ChangeDetectionStrategy.OnPush,
+
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, TranslateModule],
   templateUrl: './product-details.component.html',
   styleUrl: './product-details.component.scss',
@@ -47,7 +54,7 @@ export class ProductDetailsComponent implements OnInit {
 
   loadProduct(slug: string): void {
     this.loading.set(true);
-    this.productService.getProductBySlug(slug).subscribe({
+    this.productService.getProductBySlug(this.currentLang, slug).subscribe({
       next: (product) => {
         this.product.set(product.data);
         this.updateSEO(product.data);
@@ -111,5 +118,29 @@ export class ProductDetailsComponent implements OnInit {
 
   goBack(): void {
     this.router.navigate(['/', this.currentLang]);
+  }
+
+  addToCart(): void {
+    const product = this.product();
+    if (!product) return;
+
+    const productName = this.getLocalizedName(product);
+    const productPrice = product.price;
+    const productUrl = this.isBrowser ? window.location.href : '';
+
+    // Create WhatsApp message
+    const message =
+      this.currentLang === 'ar'
+        ? `مرحباً، أنا مهتم بهذا المنتج:\n\n*${productName}*\nالسعر: $${productPrice}\n\nالرابط: ${productUrl}`
+        : `Hello, I'm interested in this product:\n\n*${productName}*\nPrice: $${productPrice}\n\nLink: ${productUrl}`;
+
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappNumber = '201277782993'; // Egypt country code + number
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+
+    // Open WhatsApp in new tab
+    if (this.isBrowser) {
+      window.open(whatsappUrl, '_blank');
+    }
   }
 }

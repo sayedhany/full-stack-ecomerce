@@ -1,0 +1,30 @@
+<main class="products-page">
+  <div class="page-header">
+    <div class="container">
+      <h1>{{ 'ALL_PRODUCTS' | translate }}</h1>
+      <p>{{ 'BROWSE_OUR_COLLECTION' | translate }}</p>
+    </div>
+  </div>
+
+  <!-- Product Filters -->
+  <app-product-filters
+    [searchTerm]="searchTerm()"
+    [selectedCategory]="selectedCategory()"
+    [categories]="categories()"
+    [currentLang]="currentLang"
+    (searchChange)="onSearchChange($event)"
+    (categoryChange)="onCategoryChange($event)">
+  </app-product-filters>
+
+  <!-- Products Catalog -->
+  <app-products-grid
+    [products]="filteredProducts()"
+    [loading]="loading()"
+    [currentPage]="currentPage()"
+    [totalPages]="totalPages()"
+    [totalProducts]="totalProducts()"
+    [itemsPerPage]="itemsPerPage"
+    [currentLang]="currentLang"
+    (pageChange)="onPageChange($event)">
+  </app-products-grid>
+</main>

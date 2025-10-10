@@ -3,13 +3,15 @@
   @if (isBrowser) {
   <section class="carousel-section" aria-label="Featured Products">
     <swiper-container 
-      [attr.loop]="carouselImages.length > 1 "
-      [attr.autoplay]="carouselImages.length > 1 "
-      pagination="true" 
-      [attr.navigation]="carouselImages.length > 1 "
-      [attr.autoplay-delay]="50"
-      slides-per-view="1"
-      space-between="0">
+      class="hero-swiper"
+      space-between="0"
+      loop="true"
+      pagination="true"
+      pagination-clickable="true"
+      navigation="true"
+      autoplay-delay="5000"
+      autoplay-disable-on-interaction="false"
+      slides-per-view="1">
       @for (image of carouselImages; track image) {
         <swiper-slide>
           <div class="carousel-slide" [style.background-image]="'url(' + image + ')'">
@@ -24,117 +26,40 @@
   </section>
 }
 
-  <!-- Product Filters -->
-  <section class="filters-section" aria-label="Product Filters">
+  <!-- Featured Products Section -->
+  <section class="featured-products-section" aria-label="Featured Products">
     <div class="container">
-      <div class="filters">
-        <!-- Search -->
-        <div class="filter-group">
-          <label for="product-search" class="sr-only">{{ 'SEARCH_PRODUCTS' | translate }}</label>
-          <input 
-            id="product-search"
-            type="search" 
-            [placeholder]="'SEARCH_PRODUCTS' | translate"
-            [value]="searchTerm()"
-            (input)="onSearchChange($event)"
-            class="search-input"
-            aria-label="Search products">
-        </div>
-
-        <!-- Category Filter -->
-        <div class="filter-group">
-          <label for="category-filter" class="sr-only">{{ 'FILTER_BY_CATEGORY' | translate }}</label>
-          <select 
-            id="category-filter"
-            [value]="selectedCategory()"
-            (change)="onCategoryChange($event)"
-            class="category-select"
-            aria-label="Filter by category">
-            <option value="">{{ 'ALL_CATEGORIES' | translate }}</option>
-            @for (category of categories(); track category._id) {
-              <option [value]="category._id">{{ getLocalizedName(category) }}</option>
-            }
-          </select>
-        </div>
+      <div class="section-header">
+        <h2>{{ 'FEATURED_PRODUCTS' | translate }}</h2>
+        <a [routerLink]="['/', currentLang, 'products']" class="view-all-btn">
+          {{ 'VIEW_ALL_PRODUCTS' | translate }} →
+        </a>
       </div>
-    </div>
-  </section>
 
-  <!-- Products Catalog -->
-  <section class="products-section" aria-label="Product Catalog">
-    <div class="container">
       @if (loading()) {
         <div class="loading" role="status" aria-live="polite">{{ 'LOADING' | translate }}</div>
-      } @else if (filteredProducts().length === 0) {
+      } @else if (featuredProducts().length === 0) {
         <div class="no-products" role="status">{{ 'NO_PRODUCTS_FOUND' | translate }}</div>
-      } @else {
-        <div class="products-grid" role="list">
-          @for (product of filteredProducts(); track product._id) {
-            <article class="product-card" role="listitem">
-              <a [routerLink]="['/', currentLang, 'product', getProductSlug(product)]" 
-                 class="product-link"
-                 [attr.aria-label]="'View ' + getLocalizedName(product)">
-                <div class="product-image">
-                  <img [src]="product.image" 
-                       [alt]="getLocalizedName(product)"
-                       loading="lazy"
-                       width="280"
-                       height="250">
-                </div>
-                <div class="product-info">
-                  <h2 class="product-name">{{ getLocalizedName(product) }}</h2>
-                  <p class="product-category">{{ getLocalizedName(product.category) }}</p>
-                  <p class="product-description">{{ getLocalizedDescription(product) }}</p>
-                  <div class="product-footer">
-                    <span class="product-price" aria-label="Price">${{ product.price }}</span>
-                  </div>
-                </div>
-              </a>
-            </article>
+      } @else if (isBrowser) {
+        <swiper-container
+          class="products-swiper"
+          space-between="30"
+          loop="false"
+          pagination="true"
+          pagination-clickable="true"
+          navigation="true"
+          autoplay-delay="1000"
+          autoplay-disable-on-interaction="false"
+          breakpoints='{"640": {"slidesPerView": 1, "spaceBetween": 20}, "768": {"slidesPerView": 2, "spaceBetween": 30}, "1024": {"slidesPerView": 4, "spaceBetween": 30}}'>
+          @for (product of featuredProducts(); track product._id) {
+            <swiper-slide>
+              <app-product-card 
+                [product]="product"
+                [currentLang]="currentLang">
+              </app-product-card>
+            </swiper-slide>
           }
-        </div>
-
-        <!-- Pagination -->
-        @if (totalPages() > 1) {
-          <nav class="pagination" role="navigation" aria-label="Pagination">
-            <button 
-              class="pagination-btn prev"
-              [disabled]="currentPage() === 1"
-              (click)="onPageChange(currentPage() - 1)"
-              [attr.aria-label]="'Previous page'">
-              ←
-            </button>
-
-            @for (page of getPaginationArray(); track page) {
-              @if (page === -1) {
-                <span class="pagination-ellipsis">...</span>
-              } @else {
-                <button 
-                  class="pagination-btn"
-                  [class.active]="currentPage() === page"
-                  (click)="onPageChange(page)"
-                  [attr.aria-label]="'Page ' + page"
-                  [attr.aria-current]="currentPage() === page ? 'page' : null">
-                  {{ page }}
-                </button>
-              }
-            }
-
-            <button 
-              class="pagination-btn next"
-              [disabled]="currentPage() === totalPages()"
-              (click)="onPageChange(currentPage() + 1)"
-              [attr.aria-label]="'Next page'">
-              →
-            </button>
-          </nav>
-
-          <div class="pagination-info">
-            {{ 'SHOWING' | translate }} {{ (currentPage() - 1) * itemsPerPage + 1 }} - 
-            {{ Math.min(currentPage() * itemsPerPage, totalProducts()) }} 
-            {{ 'OF' | translate }} {{ totalProducts() }} {{ 'PRODUCTS' | translate }}
-          </div>
-        }
+        </swiper-container>
       }
     </div>
   </section>

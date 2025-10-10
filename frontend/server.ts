@@ -33,13 +33,10 @@ export function app(): express.Express {
     next();
   });
 
-  // Redirect root to default language
+  // Redirect root to default language (English)
   server.get('/', (req, res) => {
-    // Check if user has a language preference in cookie
-    const cookieLang = req.cookies ? req.cookies['app-language'] : null;
-    const defaultLang = ['en', 'ar'].includes(cookieLang) ? cookieLang : 'en';
-    console.log(`[DEBUG] Redirecting / to /${defaultLang}`);
-    res.redirect(302, `/${defaultLang}`);
+    console.log(`[DEBUG] Redirecting / to /en`);
+    res.redirect(302, '/en');
   });
 
   // SSR handler for all routes (only for HTML routes, not static assets)

@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { ApiResponse, Product } from '../models/product.model';
+import { SupportedLanguage } from './translation.service';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +21,10 @@ export class ProductService {
     );
   }
 
-  getProductBySlug(slug: string): Observable<{ data: Product }> {
+  getProductBySlug(
+    lang: SupportedLanguage,
+    slug: string
+  ): Observable<{ data: Product }> {
     return this.http.get<{ data: Product }>(
       `${this.apiUrl}/api/products/${slug}`
     );

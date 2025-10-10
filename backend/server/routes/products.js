@@ -169,20 +169,12 @@ router.get("/", async (req, res) => {
 
 /**
  * @swagger
- * /api/products/{lang}/{slug}:
+ * /api/products/{slug}:
  *   get:
  *     summary: Get product by slug
  *     tags: [Products]
  *     description: Retrieve a single product by its slug in the specified language
  *     parameters:
- *       - in: path
- *         name: lang
- *         required: true
- *         schema:
- *           type: string
- *           enum: [en, ar]
- *         description: Language code (en for English, ar for Arabic)
- *         example: en
  *       - in: path
  *         name: slug
  *         required: true
@@ -210,21 +202,12 @@ router.get("/", async (req, res) => {
  *       500:
  *         description: Server error
  */
-router.get("/:lang/:slug", async (req, res) => {
+router.get("/:slug", async (req, res) => {
   try {
-    const { lang, slug } = req.params;
+    const { slug } = req.params;
     const query = { isActive: true };
 
-    if (lang === "en") {
-      query["slug.en"] = slug;
-    } else if (lang === "ar") {
-      query["slug.ar"] = slug;
-    } else {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid language. Use "en" or "ar"',
-      });
-    }
+    query["slug.en"] = slug;
 
     const product = await Product.findOne(query).populate("category");
 

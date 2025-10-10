@@ -1,0 +1,60 @@
+<section class="products-section" aria-label="Product Catalog">
+  <div class="container">
+    @if (loading()) {
+      <div class="loading" role="status" aria-live="polite">{{ 'LOADING' | translate }}</div>
+    } @else if (products().length === 0) {
+      <div class="no-products" role="status">{{ 'NO_PRODUCTS_FOUND' | translate }}</div>
+    } @else {
+      <div class="products-grid" role="list">
+        @for (product of products(); track product._id) {
+          <app-product-card 
+            [product]="product"
+            [currentLang]="currentLang()">
+          </app-product-card>
+        }
+      </div>
+
+      <!-- Pagination -->
+      @if (totalPages() > 1) {
+        <nav class="pagination" role="navigation" aria-label="Pagination">
+          <button 
+            class="pagination-btn prev"
+            [disabled]="currentPage() === 1"
+            (click)="onPageChange(currentPage() - 1)"
+            [attr.aria-label]="'Previous page'">
+            ←
+          </button>
+
+          @for (page of getPaginationArray(); track page) {
+            @if (page === -1) {
+              <span class="pagination-ellipsis">...</span>
+            } @else {
+              <button 
+                class="pagination-btn"
+                [class.active]="currentPage() === page"
+                (click)="onPageChange(page)"
+                [attr.aria-label]="'Page ' + page"
+                [attr.aria-current]="currentPage() === page ? 'page' : null">
+                {{ page }}
+              </button>
+            }
+          }
+
+          <button 
+            class="pagination-btn next"
+            [disabled]="currentPage() === totalPages()"
+            (click)="onPageChange(currentPage() + 1)"
+            [attr.aria-label]="'Next page'">
+            →
+          </button>
+        </nav>
+
+        <div class="pagination-info">
+          {{ 'SHOWING' | translate }} {{ (currentPage() - 1) * itemsPerPage() + 1 }} - 
+          {{ Math.min(currentPage() * itemsPerPage(), totalProducts()) }} 
+          {{ 'OF' | translate }} {{ totalProducts() }} {{ 'PRODUCTS' | translate }}
+        </div>
+      }
+    }
+  </div>
+</section>

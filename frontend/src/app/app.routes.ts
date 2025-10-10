@@ -15,11 +15,23 @@ export const routes: Routes = [
           import('./pages/home/home.component').then((m) => m.HomeComponent),
       },
       {
+        path: 'products',
+        loadComponent: () =>
+          import('./pages/products/products.component').then(
+            (m) => m.ProductsComponent
+          ),
+      },
+      {
         path: 'product/:slug',
         loadComponent: () =>
           import('./pages/product-details/product-details.component').then(
             (m) => m.ProductDetailsComponent
           ),
+      },
+      {
+        path: 'about',
+        loadComponent: () =>
+          import('./pages/about/about.component').then((m) => m.AboutComponent),
       },
       {
         path: 'contact',
@@ -90,11 +102,23 @@ export const routes: Routes = [
           import('./pages/home/home.component').then((m) => m.HomeComponent),
       },
       {
+        path: 'products',
+        loadComponent: () =>
+          import('./pages/products/products.component').then(
+            (m) => m.ProductsComponent
+          ),
+      },
+      {
         path: 'product/:slug',
         loadComponent: () =>
           import('./pages/product-details/product-details.component').then(
             (m) => m.ProductDetailsComponent
           ),
+      },
+      {
+        path: 'about',
+        loadComponent: () =>
+          import('./pages/about/about.component').then((m) => m.AboutComponent),
       },
       {
         path: 'contact',

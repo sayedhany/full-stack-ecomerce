@@ -8,10 +8,16 @@
 
       <!-- Navigation -->
       <nav class="nav">
-        <a [routerLink]="['/', currentLang]" class="nav-link">
+        <a [routerLink]="['/', currentLang]" class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
           {{ 'HOME' | translate }}
         </a>
-        <a [routerLink]="['/', currentLang, 'contact']" class="nav-link">
+        <a [routerLink]="['/', currentLang, 'products']" class="nav-link" routerLinkActive="active">
+          {{ 'PRODUCTS' | translate }}
+        </a>
+        <a [routerLink]="['/', currentLang, 'about']" class="nav-link" routerLinkActive="active">
+          {{ 'ABOUT_US' | translate }}
+        </a>
+        <a [routerLink]="['/', currentLang, 'contact']" class="nav-link" routerLinkActive="active">
           {{ 'CONTACT_US' | translate }}
         </a>
       </nav>
