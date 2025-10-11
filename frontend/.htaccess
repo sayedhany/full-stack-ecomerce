@@ -1,0 +1,22 @@
+# Enable Rewrite Engine
+RewriteEngine On
+
+# Force HTTPS (optional but recommended)
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Reverse Proxy to your server
+# Note: This requires mod_proxy to be enabled on Hostinger
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ http://72.61.18.171:4000/$1 [P,L]
+
+# Preserve original host header
+RewriteCond %{HTTP:X-Forwarded-Host} ^$
+RewriteRule ^ - [E=HTTP_X_FORWARDED_HOST:%{HTTP_HOST}]
+
+# Alternative if mod_proxy is not available:
+# Use PHP proxy script (see proxy.php below)
+# RewriteCond %{REQUEST_FILENAME} !-f
+# RewriteCond %{REQUEST_FILENAME} !-d
+# RewriteRule ^(.*)$ /proxy.php?path=$1 [QSA,L]

@@ -130,14 +130,38 @@ export class SeoService {
           '@context': 'https://schema.org',
           '@type': 'Organization',
           name: 'EgyptFisher',
-          url: data.url,
-          logo: data.logo,
-          contactPoint: {
-            '@type': 'ContactPoint',
-            telephone: '+20-123-456-7890',
-            contactType: 'Customer Service',
-            email: 'info@egyptfisher.com',
+          url: data.url || 'https://www.egyptfisher.com',
+          logo: data.logo || 'https://www.egyptfisher.com/logo.png',
+          description:
+            'Your trusted e-commerce partner in Egypt for quality products',
+          address: {
+            '@type': 'PostalAddress',
+            streetAddress: '123 Main St',
+            addressLocality: 'Cairo',
+            addressCountry: 'EG',
           },
+          contactPoint: [
+            {
+              '@type': 'ContactPoint',
+              telephone: '+201277782993',
+              contactType: 'Customer Service',
+              email: 'info@egyptfisher.com',
+              availableLanguage: ['English', 'Arabic'],
+            },
+            {
+              '@type': 'ContactPoint',
+              telephone: '+201277782993',
+              contactType: 'Sales',
+              email: 'sales@egyptfisher.com',
+              availableLanguage: ['English', 'Arabic'],
+            },
+          ],
+          sameAs: [
+            'https://www.facebook.com/egyptfisher',
+            'https://www.twitter.com/egyptfisher',
+            'https://www.instagram.com/egyptfisher',
+            'https://www.linkedin.com/company/egyptfisher',
+          ],
         };
         break;
 
@@ -183,32 +207,63 @@ export class SeoService {
     const seoContent = {
       en: {
         home: {
-          title: 'EgyptFisher - Quality Products Online',
+          title: 'EgyptFisher - Quality Products Online | Best Deals in Egypt',
           description:
-            'Discover our wide selection of electronics and quality products. Shop online with EgyptFisher for the best deals.',
+            'Discover our wide selection of electronics and quality products. Shop online with EgyptFisher for the best deals in Cairo, Egypt. Fast delivery, secure payment.',
           keywords:
-            'e-commerce, online shopping, electronics, laptops, products, EgyptFisher',
+            'e-commerce, online shopping, electronics, laptops, products, EgyptFisher, Cairo, Egypt, best deals, fast delivery',
+        },
+        products: {
+          title: 'Shop All Products | EgyptFisher',
+          description:
+            'Browse our complete catalog of quality products. Find electronics, tools, and more with competitive prices and fast delivery across Egypt.',
+          keywords:
+            'products catalog, electronics, tools, online shopping, EgyptFisher, Egypt',
+        },
+        about: {
+          title: 'About Us | EgyptFisher - Your Trusted E-Commerce Partner',
+          description:
+            'Learn more about EgyptFisher. We are committed to providing quality products and excellent customer service throughout Egypt.',
+          keywords:
+            'about EgyptFisher, company info, e-commerce Egypt, trusted seller',
         },
         contact: {
-          title: 'Contact Us | EgyptFisher',
+          title: 'Contact Us | EgyptFisher - Customer Support',
           description:
-            'Get in touch with EgyptFisher. Contact us via email, phone, or visit our location in Cairo, Egypt.',
-          keywords: 'contact, customer service, support, EgyptFisher, Cairo',
+            'Get in touch with EgyptFisher. Contact us via email, phone, or visit our location in Cairo, Egypt. 24/7 customer support available.',
+          keywords:
+            'contact, customer service, support, EgyptFisher, Cairo, phone, email',
         },
       },
       ar: {
         home: {
-          title: 'EgyptFisher - منتجات عالية الجودة عبر الإنترنت',
+          title:
+            'EgyptFisher - منتجات عالية الجودة عبر الإنترنت | أفضل العروض في مصر',
           description:
-            'اكتشف مجموعتنا الواسعة من الإلكترونيات والمنتجات عالية الجودة. تسوق عبر الإنترنت مع EgyptFisher للحصول على أفضل العروض.',
+            'اكتشف مجموعتنا الواسعة من الإلكترونيات والمنتجات عالية الجودة. تسوق عبر الإنترنت مع EgyptFisher للحصول على أفضل العروض في القاهرة، مصر. توصيل سريع، دفع آمن.',
           keywords:
-            'التجارة الإلكترونية، التسوق عبر الإنترنت، الإلكترونيات، أجهزة الكمبيوتر المحمولة، المنتجات، EgyptFisher',
+            'التجارة الإلكترونية، التسوق عبر الإنترنت، الإلكترونيات، أجهزة الكمبيوتر المحمولة، المنتجات، EgyptFisher، القاهرة، مصر، أفضل العروض، التوصيل السريع',
+        },
+        products: {
+          title: 'تسوق جميع المنتجات | EgyptFisher',
+          description:
+            'تصفح كتالوجنا الكامل من المنتجات عالية الجودة. اعثر على الإلكترونيات والأدوات والمزيد بأسعار تنافسية وتوصيل سريع في جميع أنحاء مصر.',
+          keywords:
+            'كتالوج المنتجات، الإلكترونيات، الأدوات، التسوق عبر الإنترنت، EgyptFisher، مصر',
+        },
+        about: {
+          title: 'من نحن | EgyptFisher - شريكك الموثوق في التجارة الإلكترونية',
+          description:
+            'تعرف على المزيد عن EgyptFisher. نحن ملتزمون بتوفير منتجات عالية الجودة وخدمة عملاء ممتازة في جميع أنحاء مصر.',
+          keywords:
+            'عن EgyptFisher، معلومات الشركة، التجارة الإلكترونية مصر، بائع موثوق',
         },
         contact: {
-          title: 'اتصل بنا | EgyptFisher',
+          title: 'اتصل بنا | EgyptFisher - دعم العملاء',
           description:
-            'تواصل مع EgyptFisher. اتصل بنا عبر البريد الإلكتروني أو الهاتف أو قم بزيارة موقعنا في القاهرة، مصر.',
-          keywords: 'اتصال، خدمة العملاء، دعم، EgyptFisher، القاهرة',
+            'تواصل مع EgyptFisher. اتصل بنا عبر البريد الإلكتروني أو الهاتف أو قم بزيارة موقعنا في القاهرة، مصر. دعم العملاء متاح على مدار الساعة.',
+          keywords:
+            'اتصال، خدمة العملاء، دعم، EgyptFisher، القاهرة، هاتف، بريد إلكتروني',
         },
       },
     };
@@ -217,5 +272,36 @@ export class SeoService {
       ...seoContent[lang][pageName as keyof typeof seoContent.en],
       lang,
     };
+  }
+
+  // Add alternate language links for multilingual SEO
+  updateAlternateLanguages(baseUrl: string): void {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    const languages = ['en', 'ar'];
+
+    // Remove existing alternate links
+    const existingLinks = this.document.querySelectorAll(
+      'link[rel="alternate"]'
+    );
+    existingLinks.forEach((link) => link.remove());
+
+    // Add new alternate links
+    languages.forEach((lang) => {
+      const link = this.document.createElement('link');
+      link.setAttribute('rel', 'alternate');
+      link.setAttribute('hreflang', lang);
+      link.setAttribute('href', `${baseUrl}/${lang}`);
+      this.document.head.appendChild(link);
+    });
+
+    // Add x-default
+    const defaultLink = this.document.createElement('link');
+    defaultLink.setAttribute('rel', 'alternate');
+    defaultLink.setAttribute('hreflang', 'x-default');
+    defaultLink.setAttribute('href', baseUrl);
+    this.document.head.appendChild(defaultLink);
   }
 }

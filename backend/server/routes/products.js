@@ -169,6 +169,159 @@ router.get("/", async (req, res) => {
 
 /**
  * @swagger
+ * /api/products/category/{categoryId}:
+ *   get:
+ *     summary: Get products by category ID
+ *     tags: [Products]
+ *     description: Retrieve all active products belonging to a specific category with pagination
+ *     parameters:
+ *       - in: path
+ *         name: categoryId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Category MongoDB ObjectId
+ *         example: 507f1f77bcf86cd799439011
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number
+ *         example: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 10
+ *         description: Number of items per page
+ *         example: 10
+ *       - in: query
+ *         name: sort
+ *         schema:
+ *           type: string
+ *           enum: [newest, oldest, price-low, price-high, name-asc, name-desc]
+ *           default: newest
+ *         description: Sort order
+ *         example: newest
+ *     responses:
+ *       200:
+ *         description: Products retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 count:
+ *                   type: number
+ *                   example: 10
+ *                 total:
+ *                   type: number
+ *                   example: 25
+ *                 page:
+ *                   type: number
+ *                   example: 1
+ *                 pages:
+ *                   type: number
+ *                   example: 3
+ *                 category:
+ *                   $ref: '#/components/schemas/Category'
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Product'
+ *       404:
+ *         description: Category not found
+ *       500:
+ *         description: Server error
+ */
+router.get("/category/:categoryId", async (req, res) => {
+  try {
+    const { categoryId } = req.params;
+    const { page = 1, limit = 10, sort = "newest" } = req.query;
+
+    // Verify category exists
+    const Category = require("../models/Category");
+    const category = await Category.findById(categoryId);
+
+    if (!category) {
+      return res.status(404).json({
+        success: false,
+        message: "Category not found",
+      });
+    }
+
+    // Query for products in this category
+    const query = {
+      category: categoryId,
+      isActive: true,
+    };
+
+    // Pagination
+    const pageNum = parseInt(page, 10);
+    const limitNum = Math.min(parseInt(limit, 10), 100);
+    const skip = (pageNum - 1) * limitNum;
+
+    // Sorting
+    let sortOption = { createdAt: -1 };
+
+    switch (sort) {
+      case "oldest":
+        sortOption = { createdAt: 1 };
+        break;
+      case "price-low":
+        sortOption = { price: 1 };
+        break;
+      case "price-high":
+        sortOption = { price: -1 };
+        break;
+      case "name-asc":
+        sortOption = { "name.en": 1 };
+        break;
+      case "name-desc":
+        sortOption = { "name.en": -1 };
+        break;
+      default:
+        sortOption = { createdAt: -1 };
+    }
+
+    // Get total count
+    const total = await Product.countDocuments(query);
+
+    // Get paginated products
+    const products = await Product.find(query)
+      .populate("category")
+      .populate("createdBy updatedBy", "name email")
+      .sort(sortOption)
+      .skip(skip)
+      .limit(limitNum);
+
+    res.json({
+      success: true,
+      count: products.length,
+      total: total,
+      page: pageNum,
+      pages: Math.ceil(total / limitNum),
+      category: category,
+      data: products,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error fetching products by category",
+      error: error.message,
+    });
+  }
+});
+
+/**
+ * @swagger
  * /api/products/{slug}:
  *   get:
  *     summary: Get product by slug

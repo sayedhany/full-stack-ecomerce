@@ -278,6 +278,12 @@
     }
 
     &.links {
+      ul {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-wrap: wrap;
+      }
       h3::after {
         inset-inline-start: 50%;
         transform: translateX(-50%);

@@ -11,12 +11,13 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { ProductService } from '../../services/product.service';
+import { CategoryService } from '../../services/category.service';
 import { SeoService } from '../../services/seo.service';
 import {
   LanguageService,
   SupportedLanguage,
 } from '../../services/translation.service';
-import { Product } from '../../models/product.model';
+import { Product, Category } from '../../models/product.model';
 import { register } from 'swiper/element/bundle';
 import { ProductCardComponent } from '../../components/product-card/product-card.component';
 import { CallButtonComponent } from '../../components/call-button/call-button.component';
@@ -41,6 +42,7 @@ register();
 })
 export class HomeComponent implements OnInit {
   private productService = inject(ProductService);
+  private categoryService = inject(CategoryService);
   private languageService = inject(LanguageService);
   private seoService = inject(SeoService);
   private platformId = inject(PLATFORM_ID);
@@ -48,6 +50,7 @@ export class HomeComponent implements OnInit {
   isBrowser = isPlatformBrowser(this.platformId);
 
   featuredProducts = signal<Product[]>([]);
+  categories = signal<Category[]>([]);
   loading = signal<boolean>(true);
 
   carouselImages = [
@@ -62,7 +65,12 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.updateSEO();
-    this.loadFeaturedProducts();
+
+    // Only load data in browser, not during SSR
+    if (this.isBrowser) {
+      this.loadFeaturedProducts();
+      this.loadCategories();
+    }
   }
 
   private updateSEO(): void {
@@ -102,5 +110,30 @@ export class HomeComponent implements OnInit {
         this.loading.set(false);
       },
     });
+  }
+
+  loadCategories(): void {
+    this.categoryService.getCategories().subscribe({
+      next: (response) => {
+        // Get only active categories, limit to first 6 for home page
+        const activeCategories = response.data
+          .filter((cat) => cat.isActive)
+          .slice(0, 6);
+        this.categories.set(activeCategories);
+      },
+      error: (error) => {
+        console.error('Error loading categories:', error);
+      },
+    });
+  }
+
+  getLocalizedText(text: { en: string; ar: string }): string {
+    const lang = this.currentLang;
+    return text[lang] || text.en;
+  }
+
+  getCategoryIcon(index: number): string {
+    const icons = ['💻', '📱', '🎧', '📷', '⌚', '🎮', '🖥️', '🖱️', '⌨️', '🔌'];
+    return icons[index % icons.length];
   }
 }

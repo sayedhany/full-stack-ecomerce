@@ -8,6 +8,7 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { ProductService } from '../../services/product.service';
 import { CategoryService } from '../../services/category.service';
@@ -39,6 +40,7 @@ export class ProductsComponent implements OnInit {
   private languageService = inject(LanguageService);
   private seoService = inject(SeoService);
   private platformId = inject(PLATFORM_ID);
+  private route = inject(ActivatedRoute);
 
   isBrowser = isPlatformBrowser(this.platformId);
 
@@ -68,12 +70,8 @@ export class ProductsComponent implements OnInit {
       );
     }
 
-    // Filter by category
-    if (this.selectedCategory()) {
-      filtered = filtered.filter(
-        (product) => product.category._id === this.selectedCategory()
-      );
-    }
+    // Category filtering is now handled by the API
+    // No need to filter by category here anymore
 
     return filtered;
   });
@@ -85,7 +83,14 @@ export class ProductsComponent implements OnInit {
   ngOnInit(): void {
     this.updateSEO();
     this.loadCategories();
-    this.loadProducts();
+
+    // Check for category query parameter
+    this.route.queryParams.subscribe((params) => {
+      if (params['categoryId']) {
+        this.selectedCategory.set(params['categoryId']);
+      }
+      this.loadProducts();
+    });
   }
 
   private updateSEO(): void {
@@ -120,7 +125,16 @@ export class ProductsComponent implements OnInit {
     this.loading.set(true);
     this.currentPage.set(page);
 
-    this.productService.getProducts(page, this.itemsPerPage).subscribe({
+    // Use category-specific API if a category is selected
+    const apiCall = this.selectedCategory()
+      ? this.productService.getProductsByCategory(
+          this.selectedCategory(),
+          page,
+          this.itemsPerPage
+        )
+      : this.productService.getProducts(page, this.itemsPerPage);
+
+    apiCall.subscribe({
       next: (response) => {
         this.products.set(response.data);
         this.totalPages.set(response.pages);

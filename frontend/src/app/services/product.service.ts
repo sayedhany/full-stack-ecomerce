@@ -21,6 +21,17 @@ export class ProductService {
     );
   }
 
+  getProductsByCategory(
+    categoryId: string,
+    page: number = 1,
+    limit: number = 10,
+    sort: string = 'newest'
+  ): Observable<ApiResponse<Product>> {
+    return this.http.get<ApiResponse<Product>>(
+      `${this.apiUrl}/api/products/category/${categoryId}?page=${page}&limit=${limit}&sort=${sort}`
+    );
+  }
+
   getProductBySlug(
     lang: SupportedLanguage,
     slug: string
