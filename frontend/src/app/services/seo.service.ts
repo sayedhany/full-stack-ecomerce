@@ -130,8 +130,8 @@ export class SeoService {
           '@context': 'https://schema.org',
           '@type': 'Organization',
           name: 'EgyptFisher',
-          url: data.url || 'https://www.egyptfisher.com',
-          logo: data.logo || 'https://www.egyptfisher.com/logo.png',
+          url: data.url || 'https://egypt-fisher.com',
+          logo: data.logo || 'https://egypt-fisher.com/logo.png',
           description:
             'Your trusted e-commerce partner in Egypt for quality products',
           address: {
@@ -145,14 +145,14 @@ export class SeoService {
               '@type': 'ContactPoint',
               telephone: '+201277782993',
               contactType: 'Customer Service',
-              email: 'info@egyptfisher.com',
+              email: 'info@egypt-fisher.com',
               availableLanguage: ['English', 'Arabic'],
             },
             {
               '@type': 'ContactPoint',
               telephone: '+201277782993',
               contactType: 'Sales',
-              email: 'sales@egyptfisher.com',
+              email: 'sales@egypt-fisher.com',
               availableLanguage: ['English', 'Arabic'],
             },
           ],

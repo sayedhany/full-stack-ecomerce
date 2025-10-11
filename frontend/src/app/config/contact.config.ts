@@ -74,9 +74,9 @@ export const CONTACT_INFO: ContactInfo = {
   },
 
   emails: {
-    main: 'info@egyptfisher.com',
-    support: 'support@egyptfisher.com',
-    sales: 'sales@egyptfisher.com',
+    main: 'info@egypt-fisher.com',
+    support: 'support@egypt-fisher.com',
+    sales: 'sales@egypt-fisher.com',
   },
 
   address: {
